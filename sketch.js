@@ -66,9 +66,9 @@ function createHomeGui() { //HOME GUI
   //game descriptions
   fill(255,255,255);
   textSize(18);
-  text("App 1", displayWidth/4, displayHeight/3 + 280);
-  text("App 2", displayWidth/2, displayHeight/3 + 280);
-  text("App 3", displayWidth*3/4, displayHeight/3 + 280);
+  text("Keyboard Game", displayWidth/4, displayHeight/3 + 280);
+  text("Maze Game", displayWidth/2, displayHeight/3 + 280);
+  text("Circle Game", displayWidth*3/4, displayHeight/3 + 280);
 }
 
 
