@@ -42,7 +42,7 @@ function draw() {
 
 function createHomeGui() { //HOME GUI
   //header
-  fill(1,50,32);//dark green
+  fill(19,68,50);//dark green
   rect(0,0,displayWidth, 100);
 
   //Title
