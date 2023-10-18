@@ -74,7 +74,7 @@ function createHomeGui() { //HOME GUI
 
 function createGameGui(){ //GAME GUI
   //header
-  fill(1,50,32);//dark green
+  fill(19,68,50);//dark green
   rect(0,0, displayWidth, 100);
 
   //Title
@@ -89,9 +89,9 @@ function createGameGui(){ //GAME GUI
   rect(displayWidth/2-625, displayHeight/2-300, 1250, 500);
 
   //instructions
-  fill(80,160,205); //lightblue
+  fill(48,25,52); //lightblue
   square(displayWidth/2-175, displayHeight/2-220, 350);
-  fill(40,40,205);
+  fill(19,68,50);
   rect(displayWidth/2-175, displayHeight/2-220,350,75);
   fill(255);
   textSize(25);
