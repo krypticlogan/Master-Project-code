@@ -31,7 +31,7 @@ function draw() {
   //game screens
   else {
     createGameGui();
-    
+     
   }
 
   loadGame();
@@ -158,6 +158,8 @@ function loadGame(){
   fill(255);
   text("The objective of this game is to press all of the circles that are of a blue shade. A timer has
           been set to 20 seconds. Good Luck!", displayWidth/2, displayHeight/2-100); //Circle Instructions 
+
+        
   
 }  
 */ 
