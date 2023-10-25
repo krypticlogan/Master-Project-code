@@ -145,7 +145,7 @@ function loadGame(){
   }
 }
 
-/* function circleMode { 
+ function circleMode { 
     //instructions
   fill(80,160,205); //lightblue
   square(displayWidth/2-175, displayHeight/2-220, 350);
@@ -156,54 +156,98 @@ function loadGame(){
   text("Welcome to Roundabout Revelary!", displayWidth/2, displayHeight/2-200); //Instructions Title
   textSize(15);
   fill(255);
-  text("The objective of this game is to press all of the circles that are of a blue shade. A timer has
-          been set to 20 seconds. Good Luck!", displayWidth/2, displayHeight/2-100); //Circle Instructions 
+  text("The objective of this game is to press all of the circles that are of a blue shade. A timer has been set to 20 seconds. Good Luck!", 
+      displayWidth/2, displayHeight/2-100); //Circle Instructions 
 
-function draw() {
-  background(220);
-  
-  for (let circle of circles) {
-    circle.display();
-  }
-}
-
-function createCircles(num) {
-  for (let i = 0; i < num; i++) {
-    let x = random(width);
-    let y = random(height);
-    let radius = random(20, 50);
-    circles.push(new Circle(x, y, radius));
-  }
-}
-
-function mouseClicked() {
-  for (let i = circles.length - 1; i >= 0; i--) {
-    let circle = circles[i];
-    let d = dist(mouseX, mouseY, circle.x, circle.y);
-    if (d < circle.radius / 2) {
-      circles.splice(i, 1); // Remove the clicked circle
-    }
-  }
-}
-
-class Circle {
-  constructor(x, y, radius) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.color = color(random(255), random(255), random(255));
-  }
-
-  display() {
-    fill(this.color);
-    ellipse(this.x, this.y, this.radius);
-  }
-}
-
-
-
-        
+      let mode = 0;
+      let circles = [];
+      let startTime;
+      let gameDuration = 20; // Game duration in seconds
+      let beginButton;
+      
+      function setup() {
+        createCanvas(displayWidth - 20, displayHeight - 140);
+        colorMode(RGB);
+        createHomeGui();
+      }
+      
+      function draw() {
+        background(48, 25, 52);
+      
+        if (mode === 0) {
+          createHomeGui();
+        } else if (mode === 1) {
+          createGameGui();
+          if (circles.length === 0) {
+            beginButton.show();
+          }
+          playCircleGame();
+        }
+      }
+      function createGameGui() {
+        // Your game screen GUI code here
+        // ...
+      }
+      
+      function startCircleGame() {
+        mode = 1;
+        createCircles(10); // Create 10 circles for the game
+      }
+      
+      function beginCircleGame() {
+        beginButton.hide();
+      }
+      
+      function playCircleGame() {
+        let currentTime = (millis() - startTime) / 1000; // Calculate elapsed time in seconds
+        if (currentTime >= gameDuration) {
+          endGame();
+        } else {
+          for (let i = circles.length - 1; i >= 0; i--) {
+            let circle = circles[i];
+            circle.display();
+            let d = dist(mouseX, mouseY, circle.x, circle.y);
+            if (d < circle.radius / 2 && circle.isBlue) {
+              circles.splice(i, 1); // Remove the clicked circle
+            }
+          }
+        }
+      }
+      
+      function endGame() {
+        mode = 0;
+        circles = [];
+        // Your end game logic here
+        // For example, show a game-over message.
+      }
+      
+      function createCircles(num) {
+        for (let i = 0; i < num; i++) {
+          let x = random(width);
+          let y = random(height);
+          let radius = random(20, 50);
+          let isBlue = random() < 0.5; // 50% chance of being blue
+          circles.push(new Circle(x, y, radius, isBlue));
+        }
+      }
+      
+      class Circle {
+        constructor(x, y, radius, isBlue) {
+          this.x = x;
+          this.y = y;
+          this.radius = radius;
+          this.isBlue = isBlue;
+        }
+      
+        display() {
+          if (this.isBlue) {
+            fill(0, 0, 255);
+          } else {
+            fill(255);
+          }
+          ellipse(this.x, this.y, this.radius);
+        }
+      }
   
 }  
-*/ 
 
