@@ -159,6 +159,49 @@ function loadGame(){
   text("The objective of this game is to press all of the circles that are of a blue shade. A timer has
           been set to 20 seconds. Good Luck!", displayWidth/2, displayHeight/2-100); //Circle Instructions 
 
+function draw() {
+  background(220);
+  
+  for (let circle of circles) {
+    circle.display();
+  }
+}
+
+function createCircles(num) {
+  for (let i = 0; i < num; i++) {
+    let x = random(width);
+    let y = random(height);
+    let radius = random(20, 50);
+    circles.push(new Circle(x, y, radius));
+  }
+}
+
+function mouseClicked() {
+  for (let i = circles.length - 1; i >= 0; i--) {
+    let circle = circles[i];
+    let d = dist(mouseX, mouseY, circle.x, circle.y);
+    if (d < circle.radius / 2) {
+      circles.splice(i, 1); // Remove the clicked circle
+    }
+  }
+}
+
+class Circle {
+  constructor(x, y, radius) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.color = color(random(255), random(255), random(255));
+  }
+
+  display() {
+    fill(this.color);
+    ellipse(this.x, this.y, this.radius);
+  }
+}
+
+
+
         
   
 }  
