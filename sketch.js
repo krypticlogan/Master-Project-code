@@ -161,25 +161,20 @@ function loadGame(){
   }
 }
 
-var userInput = "hello";
-function keyPressed(){
+var userInput = "";
+function keyTyped(){
   switch(gameMode){
     case 1: return;
     case 2: return;
     case 3: 
-    userTyping();
+    userTyping(key);
   }
 }
+var userLast = '';
 
- function userTyping(){
-  if(keyCode != 13){
-    userInput+=key;
+function userTyping(key){
+    userLast = key;
   }
-  else{
-    userInput = "";
-  }
-  
- }
 
 function keyboardMode(g){
 //game layout
@@ -187,7 +182,6 @@ function keyboardMode(g){
   g.push();
   g.fill(30,70,100);
   g.textSize(20);
-  let text = "random word";
   // if(keyIsPressed){
   //   g.background(255,255,255);
   //   g.updatePixels();
@@ -197,34 +191,32 @@ function keyboardMode(g){
   let level = 1;
   let won = false;
   let word = wordBank[level-1];
+  
+  let display = g.text(word, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
 
-  g.text(word, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
-
-
-    // if(won){
-    //   if(level<7){
-    //   level++;
-    //   won = false;
-    //   }
-    // }
-    // else{
-    //   let message = text("you won!");
-    // }
   }
 
+// function displayWord(word, g){
+//   return;
+// }
 
-
-function displayWord(g, word){//open display word
-  //g.textSize(40);
-  //g.text(word, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
-
+function playKeyboardGame(lvl){//open play
   let length = word.length;
-
+  let nextLvl = lvl+1;
   for(let i = 0; i < length; i++){// for each letter in current word
     let letter = word.charAt(i);
     
+    switch(userLast){
+      case userLast === letter: return;
+      // lvl++;
+      // break;
+      default: return;
+      // break;
+    }
+
   }
-}//close dislpay word
+}
+//close play
 
 function mazeMode(g){
   g.textAlign(CENTER);
