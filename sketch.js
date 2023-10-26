@@ -1,3 +1,4 @@
+var key;
 var mode = 0;
 var gameMode = 0;
 var circleGame, mazeGame, keyboardGame;
@@ -15,6 +16,9 @@ function setup() {
   circleGame = createGraphics(GAMEBOARD_LEN, GAMEBOARD_HEIGHT);
   mazeGame = createGraphics(GAMEBOARD_LEN, GAMEBOARD_HEIGHT);
   keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
+
+  keyboardGame.background(0,0,0);
+
 
   // circleGame.background(0,0,0);
   circleMode(circleGame); 
@@ -157,14 +161,70 @@ function loadGame(){
   }
 }
 
+var userInput = "hello";
+function keyPressed(){
+  switch(gameMode){
+    case 1: return;
+    case 2: return;
+    case 3: 
+    userTyping();
+  }
+}
+
+ function userTyping(){
+  if(keyCode != 13){
+    userInput+=key;
+  }
+  else{
+    userInput = "";
+  }
+  
+ }
+
 function keyboardMode(g){
+//game layout
   g.textAlign(CENTER);
   g.push();
-  g.background(0,0,0);
   g.fill(30,70,100);
   g.textSize(20);
-  g.text("WORDS HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
-}
+  let text = "random word";
+  // if(keyIsPressed){
+  //   g.background(255,255,255);
+  //   g.updatePixels();
+  // }
+  //game logic starts here
+  var wordBank = ["up", "bye", "bear", "teach", "better", "monster" ];
+  let level = 1;
+  let won = false;
+  let word = wordBank[level-1];
+
+  g.text(word, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+
+
+    // if(won){
+    //   if(level<7){
+    //   level++;
+    //   won = false;
+    //   }
+    // }
+    // else{
+    //   let message = text("you won!");
+    // }
+  }
+
+
+
+function displayWord(g, word){//open display word
+  //g.textSize(40);
+  //g.text(word, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+
+  let length = word.length;
+
+  for(let i = 0; i < length; i++){// for each letter in current word
+    let letter = word.charAt(i);
+    
+  }
+}//close dislpay word
 
 function mazeMode(g){
   g.textAlign(CENTER);
