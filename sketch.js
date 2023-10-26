@@ -1,42 +1,42 @@
 var mode = 0;
+var gameMode = 0;
+var circleGame, mazeGame, keyboardGame;
+const GAMEBOARD_LEN = 1250;
+const GAMEBOARD_HEIGHT = 500;
  //buttons
  var instructionExit;
  var restart;
-//  backButton.position(100,displayHeight/2+200);
-//  backButton.size(100,50);
-//  backButton.mousePressed(back);
-
-//  instructionExit = createButton("X");
-//  instructionExit.size(25,25);
-//  instructionExit.position(displayWidth/2-160, displayHeight/2-210);
-//  instructionExit.mousePressed();
-
-//  restartButton = createButton("Restart");
-//  restartButton.size(100,50);
-//  restartButton.position(displayWidth-200, displayHeight-200);
-//  restartButton.mousePressed();
+ var backButton = createButton("Back");
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
   colorMode(RGB);
+//game boards - for display
+  circleGame = createGraphics(GAMEBOARD_LEN, GAMEBOARD_HEIGHT);
+  mazeGame = createGraphics(GAMEBOARD_LEN, GAMEBOARD_HEIGHT);
+  keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
+
+  // circleGame.background(0,0,0);
+  circleMode(circleGame); 
+  keyboardMode(keyboardGame);
+  mazeMode(mazeGame);
+
 }
+
 function draw() {
   background(48,25,52);
   //home screen
   if(mode == 0) {
     createHomeGui();
     loadGame();
-    
-  }
-  //game screens
-  else {
-    createGameGui();
-     
   }
 
-  loadGame();
-  
-  
+
+  //game screens
+  else {
+    createGameGui(gameMode);
+    // image(mazeGame,displayWidth/2-625, displayHeight/2-300);
+  }  
   
 }
 
@@ -72,7 +72,7 @@ function createHomeGui() { //HOME GUI
 }
 
 
-function createGameGui(){ //GAME GUI
+function createGameGui(gameMode){ //GAME GUI
   //header
   fill(19,68,50);//dark green
   rect(0,0, displayWidth, 100);
@@ -88,19 +88,19 @@ function createGameGui(){ //GAME GUI
   fill(255,255,255);
   rect(displayWidth/2-625, displayHeight/2-300, 1250, 500);
 
-  //instructions
-  fill(48,25,52); //lightblue
-  square(displayWidth/2-175, displayHeight/2-220, 350);
-  fill(19,68,50);
-  rect(displayWidth/2-175, displayHeight/2-220,350,75);
-  fill(255);
-  textSize(25);
-  text("Instructions", displayWidth/2, displayHeight/2-200); //Instructions Title
-  textSize(15);
-  fill(255);
-  text("Place Instructions Here:", displayWidth/2, displayHeight/2-100); //Instructions Text
+  // //instructions
+  // fill(48,25,52); //lightblue
+  // square(displayWidth/2-175, displayHeight/2-220, 350);
+  // fill(19,68,50);
+  // rect(displayWidth/2-175, displayHeight/2-220,350,75);
+  // fill(255);
+  // textSize(25);
+  // text("Instructions", displayWidth/2, displayHeight/2-200); //Instructions Title
+  // textSize(15);
+  // fill(255);
+  // text("Place Instructions Here:", displayWidth/2, displayHeight/2-100); //Instructions Text
 
-  let backButton = createButton("Back");
+    backButton = createButton("Back");
     backButton.position(100,displayHeight/2+210);
     backButton.size(100,30);
     backButton.mousePressed(back);
@@ -113,6 +113,14 @@ function createGameGui(){ //GAME GUI
   // instructionExit.size(25,25);
   // instructionExit.position(displayWidth/2-160, displayHeight/2-210);
   // instructionExit.mousePressed();
+  switch(gameMode){
+    case 1: image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
+    break;
+    case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
+    break;
+    case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
+    break;
+  }
   
 }
 
@@ -131,72 +139,87 @@ function loadGame(){
 
     if((x >= displayWidth/4-125 && x<= displayWidth/4+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)){
       mode = 1;
+      gameMode = 1;
     }
 
     //game 2
     if((x >= displayWidth/2-125 && x <= displayWidth/2+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)) {
       mode = 1;
+      gameMode =2;
     }
     
     //game 3
     if((x >= displayWidth*3/4-125 && x <= displayWidth*3/4+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)) {
       mode = 1;
+      gameMode = 3;
+      // circleMode();
     }
   }
 }
 
- function circleMode { 
-    //instructions
-  fill(80,160,205); //lightblue
-  square(displayWidth/2-175, displayHeight/2-220, 350);
-  fill(40,40,205);
-  rect(displayWidth/2-175, displayHeight/2-220,350,75);
-  fill(255);
-  textSize(20);
-  text("Welcome to Roundabout Revelary!", displayWidth/2, displayHeight/2-200); //Instructions Title
-  textSize(15);
-  fill(255);
-  text("The objective of this game is to press all of the circles that are of a blue shade. A timer has been set to 20 seconds. Good Luck!", 
-      displayWidth/2, displayHeight/2-100); //Circle Instructions 
+function keyboardMode(g){
+  g.textAlign(CENTER);
+  g.push();
+  g.background(0,0,0);
+  g.fill(30,70,100);
+  g.textSize(20);
+  g.text("WORDS HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+}
 
-      let mode = 0;
-      let circles = [];
-      let startTime;
-      let gameDuration = 20; // Game duration in seconds
-      let beginButton;
+function mazeMode(g){
+  g.textAlign(CENTER);
+  g.push();
+  g.background(0,0,0);
+  g.fill(30,70,100);
+  g.textSize(20);
+  g.text("MAZE HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+}
+
+ function circleMode(g) {
+  g.textAlign(CENTER);
+  g.push();
+  g.background(0,0,0);
+  g.fill(30,70,100);
+  g.textSize(20);
+  g.text("CIRCLES HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+
+    //instructions
+  // fill(80,160,205); //lightblue
+  // square(displayWidth/2-175, displayHeight/2-220, 350);
+  // fill(40,40,205);
+  // rect(displayWidth/2-175, displayHeight/2-220,350,75);
+  // fill(255);
+  // textSize(20);
+  
+
+  // let title = text("Welcome to Roundabout Revelary!" /*,displayWidth/2, displayHeight/2-200*/); //Instructions Title
+  // // textSize(15);
+  // // fill(255);
+  // let description = text("The objective of this game is to press all of the circles that are of a blue shade.\n A timer has been set to 20 seconds. \nGood Luck!" 
+  //     /*,displayWidth/2, displayHeight/2-100*/); //Circle Instructions 
+  //     let circles = [];
+  //     var startTime;
+  //     let gameDuration = 20; // Game duration in seconds
+  //     // let beginButton;
       
-      function setup() {
-        createCanvas(displayWidth - 20, displayHeight - 140);
-        colorMode(RGB);
-        createHomeGui();
-      }
+  //       // if (mode === 0) {
+  //       //   createHomeGui();
+  //       // } else if (mode === 1) {
+  //         // createGameGui();
+  //         // if (circles.length === 0) {
+  //         //   beginButton.show();
+  //         // }
+  //         playCircleGame();
+}
       
-      function draw() {
-        background(48, 25, 52);
+      // function startCircleGame() {
+      //   mode = 1;
+      //   createCircles(10); // Create 10 circles for the game
+      // }
       
-        if (mode === 0) {
-          createHomeGui();
-        } else if (mode === 1) {
-          createGameGui();
-          if (circles.length === 0) {
-            beginButton.show();
-          }
-          playCircleGame();
-        }
-      }
-      function createGameGui() {
-        // Your game screen GUI code here
-        // ...
-      }
-      
-      function startCircleGame() {
-        mode = 1;
-        createCircles(10); // Create 10 circles for the game
-      }
-      
-      function beginCircleGame() {
-        beginButton.hide();
-      }
+      // function beginCircleGame() {
+      //   beginButton.hide();
+      // }
       
       function playCircleGame() {
         let currentTime = (millis() - startTime) / 1000; // Calculate elapsed time in seconds
@@ -248,6 +271,4 @@ function loadGame(){
           ellipse(this.x, this.y, this.radius);
         }
       }
-  
-}  
 
