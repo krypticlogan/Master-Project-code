@@ -157,6 +157,8 @@ function loadGame(){
   }
 }
 
+
+
 function keyboardMode(g){
   g.textAlign(CENTER);
   g.push();
@@ -166,14 +168,83 @@ function keyboardMode(g){
   g.text("WORDS HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
 }
 
+function mousePressed(){
+  if(mode == 1){
+    return;
+  }
+  else if (mode == 2){
+    return;
+  } 
+  else if (mode == 3){
+    return;
+  } 
+}
+
+//maze game starts here
+var red = (170,0,0);
+var white = (255,255,255);
+
+function createPlayer(g){
+  let x = GAMEBOARD_LEN/2;
+  let y = GAMEBOARD_HEIGHT/2+150;
+  let size = 20
+  let color = white;
+
+  g.fill(255,255,255);//white
+  let player = g.circle(x,y,size);
+
+  function changeX(newX){
+    x = newX;
+  }
+
+  function changeY(newY){
+    y=newY;
+  }
+
+  function changeColor(newColor){
+    color = newColor;
+  }
+
+  // function isSelected(){
+  //   if(mouseIsPressed()){
+
+  //   if((mouseX >= x - 10 && mouseX < x  + 10) && (mouseY > y - 10 && mouseY < y + 10)){
+  //     return true;
+  //   }else{
+  //     return false;}
+  // }
+  // }
+
+}
 function mazeMode(g){
   g.textAlign(CENTER);
   g.push();
   g.background(0,0,0);
   g.fill(30,70,100);
   g.textSize(20);
-  g.text("MAZE HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+
+  let player = createPlayer(g);
+
+  // if(player.isSelected()){
+  //   // player.changeX(mouseX);
+  //   // player.changeY(mouseY);
+  //   return;
+  // } 
+  
+
+
+  //game logic starts here
+
+  // player.create();
+  // g.text(player.idk,GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
 }
+
+
+
+  
+//maze game ends here
+
+
 
  function circleMode(g) {
   g.textAlign(CENTER);
