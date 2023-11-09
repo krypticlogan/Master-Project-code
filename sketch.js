@@ -17,7 +17,18 @@ var wordIndex;
 let userInput;
 let lastKey;
 let displaying = [];
+let display;
 var userWord;
+let startTime;
+let score = 0;
+let timer = 30;
+
+// let currentWord = "";
+// let wordIndex = 0;
+// let letterIndex = 0;
+// let startTime;
+// let score = 0;
+// let timer = 30;
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
@@ -29,7 +40,8 @@ function setup() {
   keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
 
   userInput = "";
-  userWord = createDiv(userInput);
+  startTime = millis();
+
 
 
   // circleGame.background(0,0,0);
@@ -40,6 +52,7 @@ function setup() {
 }
 
 function draw() {
+  clear();
   background(48,25,52);
   //home screen
   if(mode == 0) {
@@ -130,22 +143,19 @@ function createGameGui(gameMode){ //GAME GUI
   // instructionExit.size(25,25);
   // instructionExit.position(displayWidth/2-160, displayHeight/2-210);
   // instructionExit.mousePressed();
+ 
   switch(gameMode){
-    case 1: image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
-      
-      var display = createDiv(userInput);
-      display.position(width/2,height/2);
-      display.size(50,10);
-      display.hide();
-      displaying.push(display);
-      for(let i = 0; i < displaying.length; i++){
-        displaying[i].show();
-      }
-      
-      if(userInput === word){
-        wordIndex++;
-        word = nextWord(words, wordIndex);
-      }
+    
+    case 1: 
+   
+    image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
+
+      keyboardGame.fill(30,70,100);
+      keyboardGame.textSize(20);
+      keyboardGame.text(currentWord, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2 + 70);
+      displayWord(keyboardGame);
+      checkWord(keyboardGame);
+      gameTimer(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
     break;
@@ -200,8 +210,11 @@ function keyboardMode(g){
   g.frameRate(60);
 
   // generateWord();
-  let drawing = new drawKeyboardGame(g);
-
+  // let drawing = new drawKeyboardGame(g);
+  words = ["apple", "banana", "cherry", "date", "elderberry", "abundant", "benevolent", "cacophony", "divergent", "eccentric", "facetious", "gargantuan", "hapless", "ineffable", "juxtapose", "kindle", "luminous", "mellifluous", "nebulous", "object", "palimpsest", "worm"];
+  currentWord = ""; // Index of the current letter being typed
+  wordIndex = 0;
+  nextWord(words, wordIndex);
   g.pop()
 
   }
@@ -215,89 +228,71 @@ function keyboardMode(g){
 // let displaying = [];
 
 
-  function drawKeyboardGame(g){
-    // generateWord();
-    letterIndex = 0; // Index of the current letter being typed
-    words = ["apple", "banana", "cherry", "date", "elderberry"];
-    
-    var startTime = millis();
-    var score = 0;
-    var timer = 30;
-    wordIndex = 0;
-
-    // let word = words[wordIndex];
-    word = nextWord(words, wordIndex);
-    g.text(word, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2 + 70);
-
-    //   // Display user input with appropriate colors
-    // for (let i = 0; i < word.length; i++) {
-    //   g.fill(i < letterIndex ? (lastKey === word[i]) ? color(0, 255, 0) : color(255, 0, 0) : color(0));
-    //   g.text(word[i], GAMEBOARD_LEN / 2 - (word.length / 2 - i) * 20, GAMEBOARD_HEIGHT / 2 + 40);
-    //   }
-
-//       var userWord = createDiv(userInput);
-      // userWord.position(GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
-      // userWord.size(20,5);
-      // userWord.hide();
-      // displaying.push(userWord);
-      // for(let i = 0; i < displaying.length; i++){
-      //   displaying[i].show();
-      // }
-
-        // Display score and timer
-    g.textSize(16);
-    g.fill(0);
-    g.text("Score: " + score, 50, 20);
-    let remainingTime = max(timer - int((millis() - startTime) / 1000), 0);
-    g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 20);
-
-      // Check if the word is completed
-    if (letterIndex >= word.length) {
-      score++;
-      wordIndex++;
-      if (wordIndex >= words.length) {
-        wordIndex = 0;
-      }
-      currentWord = nextWord(words, wordIndex);
-    }
-
-      // Check for game over
-  if (remainingTime <= 0) {
-    g.background(220);
-    g.textSize(32);
-    g.fill(0);
-    g.text("Game Over", GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 - 20);
-    g.text("Your Score: " + score, GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 + 20);
-    g.noLoop();
-  }
-}
 
   function nextWord(array, index){
     let wordIndex = index;
     let words = array;
     let word = words[wordIndex];
-    return word; 
-    
+    letterIndex = 0;
+    currentWord = word; 
   }
 
+function checkWord(){
+    // Check if the word is completed
+  if (letterIndex >= currentWord.length) {
+    score++;
+    wordIndex++;
+    keyboardGame.clear();
+    if (wordIndex >= words.length) {
+      wordIndex = 0;
+    }
+    nextWord(words, wordIndex);
+  }
+}
+
+function displayWord(g){
+  for (let i = 0; i < currentWord.length; i++) {
+        if (i === letterIndex) {
+          if (currentWord[i] === key) {
+            g.fill(0, 255, 0); // Correct letter, green
+          } else {
+            g.fill(255, 0, 0); // Incorrect letter, red
+          }
+        } else if (i < letterIndex) {
+          g.fill(0, 255, 0); // Previously correct letter, green
+        } else {
+         g.fill(0);
+        }
+        g.text(currentWord[i], GAMEBOARD_LEN / 2 - (currentWord.length / 2 - i) * 20, GAMEBOARD_HEIGHT / 2 + 40);
+      }
+}
+
+function keyPressed() {
+  if (keyCode >= 65 && keyCode <= 90) { // Check if it's a valid letter key
+    let currentLetter = currentWord[letterIndex];
+    console.log(currentLetter + "-" +  key);
+    if (key === currentLetter) {
+      letterIndex++;
+      console.log(key + " correct" )
+    }
+  }
+}
 
 
-// function keyPressed() {
-//   let word = nextWord(words, wordIndex);
-//   lastKey = key;
-//   if (keyCode >= 65 && keyCode <= 90) { // Check if it's a valid letter key
-//     let currentLetter = word[letterIndex];
-//     if (key === currentLetter) {
-//       letterIndex++;
-//     }
-//   }
+function gameTimer(g){//   // Display score and timer
+  g.textSize(16);
+  g.fill(0);
+  g.text("Score: " + score, 70, 20);
+  let remainingTime = max(timer - int((millis() - startTime) / 1000), 0);
+  g.fill(255,255,255);
+  g.noStroke();
+  g.rect(GAMEBOARD_LEN - 101,5, 1000,20);
+  g.fill(0,0,0);
+  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 20);
 
-// }
-function keyPressed(){
-  lastKey = key;
-  userInput+=lastKey;
-  letterIndex++;
-  console.log(userInput);
+
+  // displaying.splice(0,displaying.length-2);
+  // displaying.push(time);
 }
 
 function mazeMode(g){
