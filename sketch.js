@@ -22,6 +22,7 @@ var userWord;
 let startTime;
 let score = 0;
 let timer = 30;
+let remainingTime;
 
 // let currentWord = "";
 // let wordIndex = 0;
@@ -40,7 +41,8 @@ function setup() {
   keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
 
   userInput = "";
-  startTime = millis();
+  startTime = keyboardGame.millis();
+
 
 
 
@@ -147,15 +149,17 @@ function createGameGui(gameMode){ //GAME GUI
   switch(gameMode){
     
     case 1: 
+    // startTime = millis();
+
    
     image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
-
       keyboardGame.fill(30,70,100);
       keyboardGame.textSize(20);
       keyboardGame.text(currentWord, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2 + 70);
       displayWord(keyboardGame);
       checkWord(keyboardGame);
       gameTimer(keyboardGame);
+      gameOver(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
     break;
@@ -266,6 +270,16 @@ function displayWord(g){
         g.text(currentWord[i], GAMEBOARD_LEN / 2 - (currentWord.length / 2 - i) * 20, GAMEBOARD_HEIGHT / 2 + 40);
       }
 }
+function gameOver(g){
+if (remainingTime <= 1) {
+  g.background(255,255,255); // Set the background to white
+  g.textSize(32);
+  g.fill(0);
+  g.text("Game Over", GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 - 20);
+  g.text("Your Score: " + score, GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 + 20);
+  g.noLoop();
+}
+}
 
 function keyPressed() {
   if (keyCode >= 65 && keyCode <= 90) { // Check if it's a valid letter key
@@ -283,7 +297,7 @@ function gameTimer(g){//   // Display score and timer
   g.textSize(16);
   g.fill(0);
   g.text("Score: " + score, 70, 20);
-  let remainingTime = max(timer - int((millis() - startTime) / 1000), 0);
+  remainingTime = max(timer - int((millis() - startTime) / 1000), 0);
   g.fill(255,255,255);
   g.noStroke();
   g.rect(GAMEBOARD_LEN - 101,5, 1000,20);
