@@ -182,93 +182,157 @@ function mazeMode(g){
   g.fill(30,70,100);
   g.textSize(20);
   g.text("CIRCLES HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
-
-    //instructions
-  // fill(80,160,205); //lightblue
-  // square(displayWidth/2-175, displayHeight/2-220, 350);
-  // fill(40,40,205);
-  // rect(displayWidth/2-175, displayHeight/2-220,350,75);
-  // fill(255);
-  // textSize(20);
-  
-
-  // let title = text("Welcome to Roundabout Revelary!" /*,displayWidth/2, displayHeight/2-200*/); //Instructions Title
-  // // textSize(15);
-  // // fill(255);
-  // let description = text("The objective of this game is to press all of the circles that are of a blue shade.\n A timer has been set to 20 seconds. \nGood Luck!" 
-  //     /*,displayWidth/2, displayHeight/2-100*/); //Circle Instructions 
-  //     let circles = [];
-  //     var startTime;
-  //     let gameDuration = 20; // Game duration in seconds
-  //     // let beginButton;
-      
-  //       // if (mode === 0) {
-  //       //   createHomeGui();
-  //       // } else if (mode === 1) {
-  //         // createGameGui();
-  //         // if (circles.length === 0) {
-  //         //   beginButton.show();
-  //         // }
-  //         playCircleGame();
-}
-      
-      // function startCircleGame() {
-      //   mode = 1;
-      //   createCircles(10); // Create 10 circles for the game
-      // }
-      
-      // function beginCircleGame() {
-      //   beginButton.hide();
-      // }
-      
-      function playCircleGame() {
-        let currentTime = (millis() - startTime) / 1000; // Calculate elapsed time in seconds
-        if (currentTime >= gameDuration) {
-          endGame();
-        } else {
-          for (let i = circles.length - 1; i >= 0; i--) {
-            let circle = circles[i];
-            circle.display();
-            let d = dist(mouseX, mouseY, circle.x, circle.y);
-            if (d < circle.radius / 2 && circle.isBlue) {
-              circles.splice(i, 1); // Remove the clicked circle
-            }
-          }
-        }
-      }
-      
-      function endGame() {
-        mode = 0;
-        circles = [];
-        // Your end game logic here
-        // For example, show a game-over message.
-      }
-      
-      function createCircles(num) {
-        for (let i = 0; i < num; i++) {
-          let x = random(width);
-          let y = random(height);
-          let radius = random(20, 50);
-          let isBlue = random() < 0.5; // 50% chance of being blue
-          circles.push(new Circle(x, y, radius, isBlue));
-        }
-      }
-      
-      class Circle {
-        constructor(x, y, radius, isBlue) {
-          this.x = x;
-          this.y = y;
-          this.radius = radius;
-          this.isBlue = isBlue;
-        }
-      
-        display() {
-          if (this.isBlue) {
-            fill(0, 0, 255);
-          } else {
-            fill(255);
-          }
-          ellipse(this.x, this.y, this.radius);
-        }
-      }
-
+ }
+//  let mode = 0;
+//  let circles = [];
+//  let startTime;
+//  let gameDuration = 20; // Game duration in seconds;
+//  let gameButtons = []; // Array to store game buttons
+ 
+//  function setup() {
+//    createCanvas(displayWidth - 20, displayHeight - 140);
+//    colorMode(RGB);
+//    createHomeGui();
+//  }
+ 
+//  function draw() {
+//    background(48, 25, 52);
+ 
+//    if (mode === 0) {
+//      createHomeGui();
+//    } else if (mode === 1) {
+//      createGameGui();
+//      if (circles.length === 0) {
+//        beginButton.show();
+//      }
+//      playCircleGame();
+//    }
+//  }
+ 
+//  function createHomeGui() {
+//    // Header
+//    fill(19, 68, 50); // Dark green
+//    rect(0, 0, displayWidth, 100);
+ 
+//    // Title
+//    fill(255, 255, 255);
+//    textAlign(CENTER, TOP);
+//    textSize(40);
+//    text("Home", displayWidth / 2, 30); // Home Text
+ 
+//    // Welcome message
+//    //textSize(25);
+//    //text("Welcome to Motor Mender! The program to help your motor functions.", displayWidth / 2, 150);
+ 
+//    // Game descriptions
+//    fill(255, 255, 255);
+//    textSize(18);
+//    text("Circle Game", displayWidth / 4, displayHeight / 3 + 280);
+//    text("Keyboard Game", displayWidth / 2, displayHeight / 3 + 280);
+//    text("Maze Game", displayWidth * 3 / 4, displayHeight / 3 + 280);
+ 
+//    // Create game buttons
+//    createGameButton("Start Circle Game", displayWidth / 4 - 125, displayHeight / 3, startCircleGame);
+//    createGameButton("Start Maze Game", displayWidth / 2 - 125, displayHeight / 3, startMazeGame);
+//    createGameButton("Start Keyboard Game", displayWidth * 3 / 4 - 125, displayHeight / 3, startKeyboardGame);
+//  }
+ 
+//  function createGameButton(label, x, y, callback) {
+//    let button = createButton(label);
+//    button.position(x, y);
+//    button.size(250, 250); // Make the button square
+//    button.style("font-size", "20px"); // Adjust the font size
+//    button.mousePressed(() => {
+//      for (let b of gameButtons) {
+//        b.hide();
+//      }
+//      callback();
+//    });
+//    gameButtons.push(button);
+//  }
+ 
+//  function createGameGui() {
+//    // Your game screen GUI code here
+//    // ...
+//  }
+ 
+//  function startCircleGame() {
+//    mode = 1;
+//    createCircles(10); // Create 10 circles for the game
+//  }
+ 
+//  function startMazeGame() {
+//    // Add maze game initialization logic here
+//  }
+ 
+//  function startKeyboardGame() {
+//    // Add keyboard game initialization logic here
+//  }
+ 
+//  function playCircleGame() {
+//    let currentTime = (millis() - startTime) / 1000; // Calculate elapsed time in seconds
+//    if (currentTime >= gameDuration) {
+//      endGame();
+//    } else {
+//      for (let i = circles.length - 1; i >= 0; i--) {
+//        let circle = circles[i];
+//        circle.display();
+//        let d = dist(mouseX, mouseY, circle.x, circle.y);
+//        if (d < circle.radius / 2 && circle.isBlue && mouseIsPressed) {
+//          circles.splice(i, 1); // Remove the clicked circle
+//        }
+//      }
+//    }
+//  }
+ 
+//  function endGame() {
+//    mode = 0;
+//    circles = [];
+//    // Your end game logic here
+//    // For example, show a game-over message.
+//  }
+ 
+//  const desiredSpacing = 20; // Adjust the desired spacing between circles
+ 
+//  function createCircles(num) {
+//    for (let i = 0; i < num; i++) {
+//      let valid = false;
+//      let x, y, radius, isBlue;
+ 
+//      while (!valid) {
+//        valid = true;
+//        x = random(300, 1400);
+//        y = random(300, 1000);
+//        radius = random(20, 50);
+//        isBlue = random() < 0.5;
+ 
+//        for (let circle of circles) {
+//          let d = dist(x, y, circle.x, circle.y);
+//          if (d < radius + circle.radius + desiredSpacing) {
+//            valid = false;
+//            break;
+//          }
+//        }
+//      }
+ 
+//      circles.push(new Circle(x, y, radius, isBlue));
+//    }
+//  }
+ 
+//  class Circle {
+//    constructor(x, y, radius, isBlue) {
+//      this.x = x;
+//      this.y = y;
+//      this.radius = radius;
+//      this.isBlue = isBlue;
+//    }
+ 
+//    display() {
+//      if (this.isBlue) {
+//        fill(0, 0, 255);
+//      } else {
+//        fill(255);
+//      }
+//      ellipse(this.x, this.y, this.radius);
+//    }
+//  }
