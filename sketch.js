@@ -41,7 +41,7 @@ function setup() {
   keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
 
   userInput = "";
-  startTime = keyboardGame.millis();
+  startTime = millis();
 
 
 
