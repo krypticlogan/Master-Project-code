@@ -19,7 +19,7 @@ let lastKey;
 let displaying = [];
 let display;
 var userWord;
-let startTime;
+let startKeyboardTime;
 let score = 0;
 let timer = 30;
 let remainingTime;
@@ -27,7 +27,7 @@ let remainingTime;
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
-// let startTime;
+// let startKeyboardTime;
 // let score = 0;
 // let timer = 30;
 
@@ -41,7 +41,7 @@ function setup() {
   keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
 
   userInput = "";
-  startTime = millis();
+  startKeyboardTime = millis();
 
 
 
@@ -149,7 +149,7 @@ function createGameGui(gameMode){ //GAME GUI
   switch(gameMode){
     
     case 1: 
-    // startTime = millis();
+    // startKeyboardTime = millis();
 
    
     image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
@@ -297,7 +297,7 @@ function gameTimer(g){//   // Display score and timer
   g.textSize(16);
   g.fill(0);
   g.text("Score: " + score, 70, 20);
-  remainingTime = max(timer - int((millis() - startTime) / 1000), 0);
+  remainingTime = max(timer - int((millis() - startKeyboardTime) / 1000), 0);
   g.fill(255,255,255);
   g.noStroke();
   g.rect(GAMEBOARD_LEN - 101,5, 1000,20);
