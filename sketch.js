@@ -24,6 +24,13 @@ let score = 0;
 let timer = 30;
 let remainingTime;
 
+ //circle game vars
+ var circles = [];
+ let startCircleTime;
+ let gameDuration = 20; // Game duration in seconds;
+ let gameButtons = []; // Array to store game buttons
+var backButton;
+
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
@@ -48,6 +55,7 @@ function setup() {
 
   // circleGame.background(0,0,0);
   circleMode(circleGame); 
+  // startCircleGame();
   keyboardMode(keyboardGame);
   mazeMode(mazeGame);
   
