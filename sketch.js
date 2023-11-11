@@ -6,27 +6,48 @@ const GAMEBOARD_HEIGHT = 500;
  //buttons
  var instructionExit;
  var restart;
-
-
- //circle game vars
- var circles = [];
- let startCircleTime;
- let gameDuration = 20; // Game duration in seconds;
- let gameButtons = []; // Array to store game buttons
+// var keyboard, maze, circleG;
 var backButton;
+//keyboard variables
+var currentWord = "";
+var word;
+var words;
+var letterIndex;
+var wordIndex;
+let userInput;
+let lastKey;
+let displaying = [];
+let display;
+var userWord;
+let startKeyboardTime;
+let score = 0;
+let timer = 30;
+let remainingTime;
+
+// let currentWord = "";
+// let wordIndex = 0;
+// let letterIndex = 0;
+// let startKeyboardTime;
+// let score = 0;
+// let timer = 30;
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
   colorMode(RGB);
+  backButton = createButton("Back");
 //game boards - for display
   circleGame = createGraphics(GAMEBOARD_LEN, GAMEBOARD_HEIGHT);
   mazeGame = createGraphics(GAMEBOARD_LEN, GAMEBOARD_HEIGHT);
   keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
 
+  userInput = "";
+  startKeyboardTime = millis();
+
+
+
+
   // circleGame.background(0,0,0);
   circleMode(circleGame); 
-  // startCircleGame();
-
   keyboardMode(keyboardGame);
   mazeMode(mazeGame);
   
@@ -35,11 +56,13 @@ function setup() {
 }
 
 function draw() {
+  clear();
   background(48,25,52);
   //home screen
   if(mode == 0) {
     createHomeGui();
     loadGame();
+    
   }
 
 
@@ -124,8 +147,21 @@ function createGameGui(gameMode){ //GAME GUI
   // instructionExit.size(25,25);
   // instructionExit.position(displayWidth/2-160, displayHeight/2-210);
   // instructionExit.mousePressed();
+ 
   switch(gameMode){
-    case 1: image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
+    
+    case 1: 
+    // startKeyboardTime = millis();
+
+   
+    image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
+      keyboardGame.fill(30,70,100);
+      keyboardGame.textSize(20);
+      keyboardGame.text(currentWord, GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2 + 70);
+      displayWord(keyboardGame);
+      checkWord(keyboardGame);
+      gameTimer(keyboardGame);
+      gameOver(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
     break;
@@ -142,6 +178,7 @@ function back(){
     backButton.remove();
     }
 }
+
 function loadGame(){
   if(mouseIsPressed){
     let x = mouseX;
@@ -171,12 +208,109 @@ function loadGame(){
 }
 
 function keyboardMode(g){
+//game layout
+  g.background(255,255,255);
   g.textAlign(CENTER);
   g.push();
-  g.background(0,0,0);
   g.fill(30,70,100);
   g.textSize(20);
-  g.text("WORDS HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+
+  g.frameRate(60);
+
+  // generateWord();
+  // let drawing = new drawKeyboardGame(g);
+  words = ["apple", "banana", "cherry", "date", "elderberry", "abundant", "benevolent", "cacophony", "divergent", "eccentric", "facetious", "gargantuan", "hapless", "ineffable", "juxtapose", "kindle", "luminous", "mellifluous", "nebulous", "object", "palimpsest", "worm"];
+  currentWord = ""; // Index of the current letter being typed
+  wordIndex = 0;
+  nextWord(words, wordIndex);
+  g.pop()
+
+  }
+
+//   var word;
+//   var words;
+//   var letterIndex;
+//   var wordIndex;
+// let userInput = "";
+// let lastKey;
+// let displaying = [];
+
+
+
+  function nextWord(array, index){
+    let wordIndex = index;
+    let words = array;
+    let word = words[wordIndex];
+    letterIndex = 0;
+    currentWord = word; 
+  }
+
+function checkWord(){
+    // Check if the word is completed
+  if (letterIndex >= currentWord.length) {
+    score++;
+    wordIndex++;
+    keyboardGame.clear();
+    if (wordIndex >= words.length) {
+      wordIndex = 0;
+    }
+    nextWord(words, wordIndex);
+  }
+}
+
+function displayWord(g){
+  for (let i = 0; i < currentWord.length; i++) {
+        if (i === letterIndex) {
+          if (currentWord[i] === key) {
+            g.fill(0, 255, 0); // Correct letter, green
+          } else {
+            g.fill(255, 0, 0); // Incorrect letter, red
+          }
+        } else if (i < letterIndex) {
+          g.fill(0, 255, 0); // Previously correct letter, green
+        } else {
+         g.fill(0);
+        }
+        g.text(currentWord[i], GAMEBOARD_LEN / 2 - (currentWord.length / 2 - i) * 20, GAMEBOARD_HEIGHT / 2 + 40);
+      }
+}
+function gameOver(g){
+if (remainingTime <= 1) {
+  g.background(255,255,255); // Set the background to white
+  g.textSize(32);
+  g.fill(0);
+  g.text("Game Over", GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 - 20);
+  g.text("Your Score: " + score, GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 + 20);
+  g.noLoop();
+}
+}
+
+function keyPressed() {
+  if (keyCode >= 65 && keyCode <= 90) { // Check if it's a valid letter key
+    let currentLetter = currentWord[letterIndex];
+    console.log(currentLetter + "-" +  key);
+    if (key === currentLetter) {
+      letterIndex++;
+      console.log(key + " correct" )
+    }
+  }
+}
+
+
+function gameTimer(g){//   // Display score and timer
+  g.textSize(16);
+  g.fill(0);
+  g.text("Score: " + score, 70, 20);
+  remainingTime = max(timer - int((millis() - startKeyboardTime) / 1000), 0);
+  g.fill(255,255,255);
+  g.noStroke();
+  g.rect(GAMEBOARD_LEN - 101,5, 1000,20);
+  g.fill(0,0,0);
+  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 20);
+
+
+  // displaying.splice(0,displaying.length-2);
+  // displaying.push(time);
 }
 
 function mazeMode(g){
