@@ -10,7 +10,7 @@ const GAMEBOARD_HEIGHT = 500;
 
  //circle game vars
  var circles = [];
- let startTime;
+ let startCircleTime;
  let gameDuration = 20; // Game duration in seconds;
  let gameButtons = []; // Array to store game buttons
 var backButton;
@@ -204,7 +204,7 @@ function mazeMode(g){
   }
 //  let mode = 0;
 //  let circles = [];
-//  let startTime;
+//  let startCircleTime;
 //  let gameDuration = 20; // Game duration in seconds;
 //  let gameButtons = []; // Array to store game buttons
  
@@ -239,7 +239,7 @@ function mazeMode(g){
  
  function playCircleGame(g) {
   // g.background(48, 25, 52);      
-   let currentTime = (millis() - startTime) / 1000; // Calculate elapsed time in seconds
+   let currentTime = (millis() - startCircleTime) / 1000; // Calculate elapsed time in seconds
    if (currentTime >= gameDuration) {
      endGame();
    } else {
