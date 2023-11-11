@@ -25,6 +25,8 @@ function setup() {
 
   // circleGame.background(0,0,0);
   circleMode(circleGame); 
+  // startCircleGame();
+
   keyboardMode(keyboardGame);
   mazeMode(mazeGame);
   
@@ -162,6 +164,7 @@ function loadGame(){
     if((x >= displayWidth*3/4-125 && x <= displayWidth*3/4+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)) {
       mode = 1;
       gameMode = 3;
+      startCircleGame();
       // circleMode();
     }
   }
@@ -195,7 +198,7 @@ function mazeMode(g){
 
   // g.background(48, 25, 52);
  
-  startCircleGame();
+  // startCircleGame();
   // playCircleGame(g);
 
   }
@@ -223,6 +226,7 @@ function mazeMode(g){
  
  function startCircleGame() {
    createCircles(10); // Create 10 circles for the game
+   console.log(circles);
  }
  
 //  function startMazeGame() {
@@ -234,6 +238,7 @@ function mazeMode(g){
 //  }
  
  function playCircleGame(g) {
+  // g.background(48, 25, 52);      
    let currentTime = (millis() - startTime) / 1000; // Calculate elapsed time in seconds
    if (currentTime >= gameDuration) {
      endGame();
@@ -241,10 +246,12 @@ function mazeMode(g){
      for (let i = circles.length - 1; i >= 0; i--) {
        let circle = circles[i];
        circle.display(g);
-       let d = dist(mouseX, mouseY, circle.x, circle.y);
+       let adjX = mouseX-94;
+       let adjY = mouseY-147;
+       let d = dist(adjX, adjY, circle.x, circle.y);
        if (d < circle.radius / 2 && circle.isBlue && mouseIsPressed) {
          circles.splice(i, 1); // Remove the clicked circle
-         g.clear();       
+         g.background(0,0,0);       
        }
      }
    }
