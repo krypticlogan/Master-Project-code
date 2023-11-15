@@ -24,12 +24,21 @@ let score = 0;
 let timer = 30;
 let remainingTime;
 
+//sounds
+let ding;
+
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
 // let startTime;
 // let score = 0;
 // let timer = 30;
+
+function preload(){
+  soundFormats('mp3');
+  ding = loadSound('sounds/dingy.mp3')
+  buzz = loadSound('sounds/buzzy.mp3')
+}
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
@@ -149,9 +158,7 @@ function createGameGui(gameMode){ //GAME GUI
   switch(gameMode){
     
     case 1: 
-    // startTime = millis();
-
-   
+    // startTime = millis();   
     image(keyboardGame,displayWidth/2-625, displayHeight/2-300);
       keyboardGame.fill(30,70,100);
       keyboardGame.textSize(20);
@@ -246,6 +253,7 @@ function keyboardMode(g){
 function checkWord(){
     // Check if the word is completed
   if (letterIndex >= currentWord.length) {
+    ding.play();
     score++;
     wordIndex++;
     keyboardGame.clear();
@@ -286,10 +294,11 @@ if (remainingTime <= 1) {
 function keyPressed() {
   if (keyCode >= 65 && keyCode <= 90) { // Check if it's a valid letter key
     let currentLetter = currentWord[letterIndex];
-    console.log(currentLetter + "-" +  key);
     if (key === currentLetter) {
       letterIndex++;
-      console.log(key + " correct" )
+    }
+    else{
+      buzz.play();
     }
   }
 }
