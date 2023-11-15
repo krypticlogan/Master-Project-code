@@ -383,7 +383,7 @@ function movePlayer(g){
   let adjX = mouseX-94;
   let adjY = mouseY-147;
   g.background(0,0,0);
-  g.circle(mouseX*scaleX,mouseY*scaleY,10);
+  g.circle(mouseX-(displayWidth/2-625),mouseY-(displayHeight/2-300),10);
   // g.background(0,0,0);
   let d = dist(adjX, adjY, playerX, playerY);
        if (d < 10 && mouseIsPressed) {
