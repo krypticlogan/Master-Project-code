@@ -1,8 +1,13 @@
+//global vars
 var mode = 0;
 var gameMode = 0;
 var circleGame, mazeGame, keyboardGame;
 const GAMEBOARD_LEN = 1250;
 const GAMEBOARD_HEIGHT = 500;
+
+let scaleX;
+let scaleY;
+
  //buttons
  var instructionExit;
  var restart;
@@ -24,6 +29,10 @@ let score = 0;
 let timer = 30;
 let remainingTime;
 
+//maze variables
+let playerX = GAMEBOARD_LEN/2;
+let playerY = GAMEBOARD_HEIGHT/2+150;
+
  //circle game vars
  var circles = [];
  let startCircleTime;
@@ -40,6 +49,8 @@ var backButton;
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
+  scaleX = GAMEBOARD_LEN/(displayWidth-20);
+  scaleY = GAMEBOARD_HEIGHT/(displayHeight-140);
   colorMode(RGB);
   backButton = createButton("Back");
 //game boards - for display
@@ -172,6 +183,8 @@ function createGameGui(gameMode){ //GAME GUI
       gameOver(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
+    let player = drawPlayer(mazeGame,playerX,playerY,'white');
+    movePlayer(mazeGame);
     break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
@@ -335,31 +348,17 @@ function mousePressed(){
   } 
 }
 
+
+var player;
+let playerSize = 20;
+let playerColor;
 //maze game starts here
-var red = (170,0,0);
-var white = (255,255,255);
-
-function createPlayer(g){
-  let x = GAMEBOARD_LEN/2;
-  let y = GAMEBOARD_HEIGHT/2+150;
-  let size = 20
-  let color = white;
-
-  g.fill(255,255,255);//white
-  let player = g.circle(x,y,size);
-
-  function changeX(newX){
-    x = newX;
-  }
-
-  function changeY(newY){
-    y=newY;
-  }
-
-  function changeColor(newColor){
-    color = newColor;
-  }
-
+function drawPlayer(g,playerX,playerY,stringColor){
+  let playerColor = color(stringColor);
+  this.playerX = playerX;
+  this.playerY = playerY;
+  g.fill(playerColor);// white or red
+  g.circle(playerX,playerY,playerSize);
   // function isSelected(){
   //   if(mouseIsPressed()){
 
@@ -371,6 +370,45 @@ function createPlayer(g){
   // }
 
 }
+
+function changeX(newX){
+  playerX = newX;
+}
+
+function changeY(newY){
+  playerY =newY;
+}
+
+function movePlayer(g){
+  let adjX = mouseX-94;
+  let adjY = mouseY-147;
+  g.background(0,0,0);
+  g.circle(mouseX*scaleX,mouseY*scaleY,10);
+  // g.background(0,0,0);
+  let d = dist(adjX, adjY, playerX, playerY);
+       if (d < 10 && mouseIsPressed) {
+         console.log("clicked")
+        //  changeX(mouseX);
+        //  changeY(mouseY);
+        //  drawPlayer(mazeGame,playerX,playerY,'white');
+        //  g.background(0,0,0);       
+       }
+}
+
+function playerSelected(){
+  return;
+}
+function changeColor(newColor){
+  if(newColor == red){
+    g.fill(170,0,0);
+  }
+  if(newColor == white){
+    g.fill(255,255,255);
+  }
+}
+
+
+
 function mazeMode(g){
   g.textAlign(CENTER);
   g.push();
@@ -378,7 +416,8 @@ function mazeMode(g){
   g.fill(30,70,100);
   g.textSize(20);
 
-  let player = createPlayer(g);
+  // let player = createPlayer(g);
+  // player.changeColor(red);
 
   // if(player.isSelected()){
   //   // player.changeX(mouseX);
@@ -399,7 +438,7 @@ function mazeMode(g){
   
 //maze game ends here
 
-
+// circle game starts here
 
  function circleMode(g) {
   g.textAlign(CENTER);
@@ -407,49 +446,12 @@ function mazeMode(g){
   g.background(0,0,0);
   g.fill(30,70,100);
   g.textSize(20);
-  // g.text("CIRCLES HERE", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
-
-  // g.background(48, 25, 52);
- 
-  // startCircleGame();
-  // playCircleGame(g);
-
   }
-//  let mode = 0;
-//  let circles = [];
-//  let startCircleTime;
-//  let gameDuration = 20; // Game duration in seconds;
-//  let gameButtons = []; // Array to store game buttons
- 
-//  function setup() {
-//    createCanvas(displayWidth - 20, displayHeight - 140);
-//    colorMode(RGB);
-//    createHomeGui();
-//  }
- 
-//  function draw() {
-//    background(48, 25, 52);
- 
-//    if (circles.length === 0) {
-//    beginButton.show();
-//      }
-//    playCircleGame();
-//    }
-//  }
- 
  function startCircleGame() {
    createCircles(10); // Create 10 circles for the game
    console.log(circles);
  }
- 
-//  function startMazeGame() {
-//    // Add maze game initialization logic here
-//  }
- 
-//  function startKeyboardGame() {
-//    // Add keyboard game initialization logic here
-//  }
- 
+
  function playCircleGame(g) {
   // g.background(48, 25, 52);      
    let currentTime = (millis() - startCircleTime) / 1000; // Calculate elapsed time in seconds
