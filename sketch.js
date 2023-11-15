@@ -4,6 +4,9 @@ var gameMode = 0;
 var circleGame, mazeGame, keyboardGame;
 const GAMEBOARD_LEN = 1250;
 const GAMEBOARD_HEIGHT = 500;
+let keyboardImg;
+let circleImg;
+let mazeImg;
 
 let scaleX;
 let scaleY;
@@ -28,6 +31,8 @@ let startKeyboardTime;
 let score = 0;
 let timer = 30;
 let remainingTime;
+  
+
 
 //maze variables
 let playerX = GAMEBOARD_LEN/2;
@@ -46,6 +51,12 @@ var backButton;
 // let startKeyboardTime;
 // let score = 0;
 // let timer = 30;
+
+function preload() {
+    keyboardImg = loadImage('Images/keyboard game image.png');
+    circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
+    mazeImg = loadImage('Images/maze image.jpeg')
+  }
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
@@ -109,12 +120,15 @@ function createHomeGui() { //HOME GUI
   text("Welcome to Motor Mender! \nThe program to help your motor functions.", displayWidth/2, 150);
 
   //app frames
+  
+  
   fill(255,255,255);
-  square(displayWidth/4-125, displayHeight/3,250);
-
-  square((displayWidth)/2-125, displayHeight/3,250);
-
-  square(displayWidth*3/4-125, displayHeight/3,250);
+  image(keyboardImg,displayWidth/4-125, displayHeight/3,250,250);
+  // square(displayWidth/4-125, displayHeight/3,250);
+  image(mazeImg,(displayWidth)/2-125, displayHeight/3,250,250);
+  // square((displayWidth)/2-125, displayHeight/3,250);
+  image(circleImg,displayWidth*3/4-125, displayHeight/3,250,250);
+  // square(displayWidth*3/4-125, displayHeight/3,250);
 
   //game descriptions
   fill(255,255,255);
