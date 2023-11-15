@@ -45,6 +45,9 @@ let playerY = GAMEBOARD_HEIGHT/2+150;
  let gameButtons = []; // Array to store game buttons
 var backButton;
 
+//sounds
+let ding;
+let buzz;
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
@@ -52,10 +55,20 @@ var backButton;
 // let score = 0;
 // let timer = 30;
 
-function preload() {
-    keyboardImg = loadImage('Images/keyboard game image.png');
-    circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
-    mazeImg = loadImage('Images/maze image.jpeg')
+function preload(){
+  soundFormats('mp3');
+  ding = loadSound('sounds/dingy.mp3')
+  buzz = loadSound('sounds/buzzy.mp3')
+}
+
+function preload(){
+  soundFormats('mp3');
+  ding = loadSound('sounds/dingy.mp3')
+  buzz = loadSound('sounds/buzzy.mp3')
+
+  keyboardImg = loadImage('Images/keyboard game image.png');
+  circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
+  mazeImg = loadImage('Images/maze image.jpeg')
   }
 
 function setup() {
@@ -285,6 +298,7 @@ function keyboardMode(g){
 function checkWord(){
     // Check if the word is completed
   if (letterIndex >= currentWord.length) {
+    ding.play();
     score++;
     wordIndex++;
     keyboardGame.clear();
@@ -325,10 +339,11 @@ if (remainingTime <= 1) {
 function keyPressed() {
   if (keyCode >= 65 && keyCode <= 90) { // Check if it's a valid letter key
     let currentLetter = currentWord[letterIndex];
-    console.log(currentLetter + "-" +  key);
     if (key === currentLetter) {
       letterIndex++;
-      console.log(key + " correct" )
+    }
+    else{
+      buzz.play();
     }
   }
 }
