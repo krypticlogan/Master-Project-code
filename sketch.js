@@ -26,7 +26,7 @@ let remainingTime;
 
 //sounds
 let ding;
-
+let buzz;
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
