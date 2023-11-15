@@ -59,12 +59,6 @@ function preload(){
   soundFormats('mp3');
   ding = loadSound('sounds/dingy.mp3')
   buzz = loadSound('sounds/buzzy.mp3')
-}
-
-function preload(){
-  soundFormats('mp3');
-  ding = loadSound('sounds/dingy.mp3')
-  buzz = loadSound('sounds/buzzy.mp3')
 
   keyboardImg = loadImage('Images/keyboard game image.png');
   circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
