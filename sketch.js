@@ -60,6 +60,7 @@ function preload() {
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
+  textFont('Verdana');
   scaleX = GAMEBOARD_LEN/(displayWidth-20);
   scaleY = GAMEBOARD_HEIGHT/(displayHeight-140);
   colorMode(RGB);
