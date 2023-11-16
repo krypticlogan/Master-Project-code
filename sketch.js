@@ -197,8 +197,8 @@ function createGameGui(gameMode){ //GAME GUI
       gameOver(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
-    let player = drawPlayer(mazeGame,playerX,playerY,'white');
     movePlayer(mazeGame);
+    let player = drawPlayer(mazeGame,playerX,playerY,'white');
     break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
@@ -328,7 +328,6 @@ function keyPressed() {
     console.log(currentLetter + "-" +  key);
     if (key === currentLetter) {
       letterIndex++;
-      console.log(key + " correct" )
     }
   }
 }
@@ -394,14 +393,16 @@ function changeY(newY){
 }
 
 function movePlayer(g){
-  let adjX = mouseX-94;
-  let adjY = mouseY-147;
+  let adjX = mouseX-displayWidth/2-625;
+  let adjY = mouseY-displayHeight/2-300;
   g.background(0,0,0);
   g.circle(mouseX-(displayWidth/2-625),mouseY-(displayHeight/2-300),10);
+  // drawPlayer(g,adjX,adjY,"white");
   // g.background(0,0,0);
   let d = dist(adjX, adjY, playerX, playerY);
        if (d < 10 && mouseIsPressed) {
-         console.log("clicked")
+        drawPlayer(g,adjX,adjY,"white");
+         console.log("clicked");
         //  changeX(mouseX);
         //  changeY(mouseY);
         //  drawPlayer(mazeGame,playerX,playerY,'white');
