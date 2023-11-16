@@ -44,6 +44,7 @@ let playerY = GAMEBOARD_HEIGHT/2+150;
  let gameDuration = 20; // Game duration in seconds;
  let gameButtons = []; // Array to store game buttons
 var backButton;
+let circleScore;
 
 //sounds
 let ding;
@@ -217,7 +218,9 @@ function createGameGui(gameMode){ //GAME GUI
 function back(){
   if(mode == 1){
     mode = 0;
-    backButton.remove();
+    // backButton.hide();
+    circleGame.background(0,0,0);
+    restartCircles();
     }
 }
 
@@ -359,6 +362,7 @@ function gameTimer(g){//   // Display score and timer
   // displaying.push(time);
 }
 
+
 function mousePressed(){
   if(mode == 1){
     return;
@@ -403,10 +407,10 @@ function changeY(newY){
 }
 
 function movePlayer(g){
-  let adjX = mouseX-94;
-  let adjY = mouseY-147;
+  let adjX = mouseX-(displayWidth/2-625);
+  let adjY = mouseY-(displayHeight/2-300);
   g.background(0,0,0);
-  g.circle(mouseX-(displayWidth/2-625),mouseY-(displayHeight/2-300),10);
+  g.circle(adjX,adjY,10);
   // g.background(0,0,0);
   let d = dist(adjX, adjY, playerX, playerY);
        if (d < 10 && mouseIsPressed) {
@@ -471,7 +475,7 @@ function mazeMode(g){
   g.textSize(20);
   }
  function startCircleGame() {
-   createCircles(10); // Create 10 circles for the game
+   createCircles(20); // Create 10 circles for the game
    console.log(circles);
  }
 
@@ -484,13 +488,20 @@ function mazeMode(g){
      for (let i = circles.length - 1; i >= 0; i--) {
        let circle = circles[i];
        circle.display(g);
-       let adjX = mouseX-94;
-       let adjY = mouseY-147;
+       let adjX = mouseX-(displayWidth/2-625);
+       let adjY = mouseY-(displayHeight/2-300);
        let d = dist(adjX, adjY, circle.x, circle.y);
-       if (d < circle.radius / 2 && circle.isBlue && mouseIsPressed) {
+       if (d < circle.radius / 2){
+        if(!circle.isBlue){
+          circle.isRed = true;
+          buzz.play();
+        }
+        else if(mouseIsPressed) {
          circles.splice(i, 1); // Remove the clicked circle
-         g.background(0,0,0);       
+         g.background(0,0,0);      
+         ding.play();
        }
+      }
      }
    }
  }
@@ -510,10 +521,10 @@ function mazeMode(g){
  
      while (!valid) {
        valid = true;
-       x = random(300, 1400);
-       y = random(100, GAMEBOARD_HEIGHT-100);
+       x = random(51, GAMEBOARD_LEN-50);
+       y = random(51, GAMEBOARD_HEIGHT-100);
        radius = random(20, 50);
-       isBlue = random() < 0.5;
+       isBlue = random() <= 0.4;
        
  
        for (let circle of circles) {
@@ -530,19 +541,28 @@ function mazeMode(g){
  }
  
  class Circle {
-   constructor(x, y, radius, isBlue) {
+   constructor(x, y, radius, isBlue, isRed) {
      this.x = x;
      this.y = y;
      this.radius = radius;
      this.isBlue = isBlue;
+     this.isRed = isRed;
    }
  
    display(g) {
      if (this.isBlue) {
        g.fill(0, 0, 255);
+     } 
+     else if(this.isRed){
+      g.fill(255,0,0);
      } else {
        g.fill(255);
      }
      g.ellipse(this.x, this.y, this.radius);
    }
+ }
+
+ function restartCircles(){
+  circles = [];
+  circleScore = 0;
  }
