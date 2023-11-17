@@ -144,6 +144,12 @@ function createHomeGui() { //HOME GUI
   text("Keyboard Game", displayWidth/4, displayHeight/3 + 280);
   text("Maze Game", displayWidth/2, displayHeight/3 + 280);
   text("Circle Game", displayWidth*3/4, displayHeight/3 + 280);
+
+  fill(255);
+  rect(displayWidth-200,displayHeight/2+210,100,30);
+  textSize(15);
+  fill(0);
+  text("Credits", displayWidth-160,displayHeight/2+220)
 }
 
 
@@ -164,6 +170,9 @@ function createGameGui(gameMode){ //GAME GUI
   }
   if (gameMode == 3) {
     text("Circle Game", displayWidth/2, 30);
+  }
+  if (gameMode == 4) {
+    text("Credits", displayWidth/2, 30)
   }
   
 
@@ -219,6 +228,8 @@ function createGameGui(gameMode){ //GAME GUI
     break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
+    case 4:
+      createCreditsGUI();
     break;
   }
   
@@ -255,6 +266,10 @@ function loadGame(){
       gameMode = 3;
       startCircleGame();
       // circleMode();
+    }
+    if((x >= displayWidth-200 && x<= displayWidth-100)&&(y >= displayHeight/2+210 && y <= displayHeight/2+240)){
+      mode = 1;
+      gameMode = 4;
     }
   }
 }
@@ -555,4 +570,24 @@ function mazeMode(g){
      }
      g.ellipse(this.x, this.y, this.radius);
    }
+ }
+
+ //Credits
+ 
+ 
+ function createCreditsGUI(){ //Credits GUI
+  
+      clear();
+      background(48,25,52);
+      fill(19,68,50);//dark green
+      rect(0,0, displayWidth, 100);
+
+     //Title
+      fill(255,255,255);
+      textAlign(CENTER, TOP);
+      textSize(40);
+      text("Credits")
+
+      
+    
  }
