@@ -35,6 +35,7 @@ let remainingTime;
 
 
 //maze variables
+let player;
 let playerX = GAMEBOARD_LEN/2;
 let playerY = GAMEBOARD_HEIGHT/2+150;
 
@@ -198,8 +199,12 @@ function createGameGui(gameMode){ //GAME GUI
       gameOver(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
-    movePlayer(mazeGame);
-    let player = drawPlayer(mazeGame,playerX,playerY,'white');
+    mazeGame.background(0,0,0);
+      player = new Player(mazeGame, playerX, playerY, 'white');
+      // player.show();
+      player.mouseOver();
+      player.update();
+      player.show();
     break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
@@ -350,80 +355,63 @@ function gameTimer(g){//   // Display score and timer
   // displaying.push(time);
 }
 
-function mousePressed(){
-  if(mode == 1){
-    return;
-  }
-  else if (mode == 2){
-    return;
-  } 
-  else if (mode == 3){
-    return;
-  } 
-}
 
 
-var player;
-let playerSize = 20;
-let playerColor;
+// keyboard game ends
+
 //maze game starts here
-function drawPlayer(g,playerX,playerY,stringColor){
-  let playerColor = color(stringColor);
-  this.playerX = playerX;
-  this.playerY = playerY;
-  g.fill(playerColor);// white or red
-  g.circle(playerX,playerY,playerSize);
-  // function isSelected(){
-  //   if(mouseIsPressed()){
-
-  //   if((mouseX >= x - 10 && mouseX < x  + 10) && (mouseY > y - 10 && mouseY < y + 10)){
-  //     return true;
-  //   }else{
-  //     return false;}
-  // }
-  // }
-
-}
-
-function changeX(newX){
-  playerX = newX;
-}
-
-function changeY(newY){
-  playerY =newY;
-}
-
-function movePlayer(g){
-  let adjX = mouseX-displayWidth/2-625;
-  let adjY = mouseY-displayHeight/2-300;
-  g.background(0,0,0);
-  g.circle(mouseX-(displayWidth/2-625),mouseY-(displayHeight/2-300),10);
-  // drawPlayer(g,adjX,adjY,"white");
-  // g.background(0,0,0);
-  let d = dist(adjX, adjY, playerX, playerY);
-       if (d < 10 && mouseIsPressed) {
-        drawPlayer(g,adjX,adjY,"white");
-         console.log("clicked");
-        //  changeX(mouseX);
-        //  changeY(mouseY);
-        //  drawPlayer(mazeGame,playerX,playerY,'white');
-        //  g.background(0,0,0);       
-       }
-}
-
-function playerSelected(){
-  return;
-}
-function changeColor(newColor){
-  if(newColor == red){
-    g.fill(170,0,0);
+class Player {
+  constructor(g,pX,pY,pColor){
+    this.g = g;
+    this.x = pX;
+    this.y = pY;
+    this.color = pColor;
+    this.r = 20;
+    this.dragging = false;
+    this.touching = false;
+    this.relX = mouseX-(displayWidth/2-625);
+    this.relY = mouseY-(displayHeight/2-300);
+    this.offsetX = 0;
+    this.offsetY = 0;
   }
-  if(newColor == white){
-    g.fill(255,255,255);
+
+  show(){
+    if(this.touching){
+      this.g.fill(200,0,200);
+    } else {
+      this.g.fill(255,255,255);
+    }
+    this.g.circle(this.x,this.y,this.r);
+  }
+
+  update(){
+    if(this.dragging){
+    this.x = this.relX + this.offsetX;
+    this.y = this.relY + this.offsetY;
+    }
+  }
+
+  mouseOver(){
+    let d = dist(this.relX, this.relY, this.x, this.y);
+    if (d < this.r/2){
+      this.touching = true;
+    }
+  }
+
+  pressed(){
+    let d = dist(this.relX, this.relY, this.x, this.y);
+    if (d < this.r/2){
+      this.dragging = true;
+
+      this.offsetX = this.x - this.relX;
+      this.offsetY = this.y - this.relY;
+    }
+  }
+
+  released(){
+    this.dragging = false;
   }
 }
-
-
 
 function mazeMode(g){
   g.textAlign(CENTER);
@@ -432,21 +420,8 @@ function mazeMode(g){
   g.fill(30,70,100);
   g.textSize(20);
 
-  // let player = createPlayer(g);
-  // player.changeColor(red);
-
-  // if(player.isSelected()){
-  //   // player.changeX(mouseX);
-  //   // player.changeY(mouseY);
-  //   return;
-  // } 
-  
-
-
   //game logic starts here
 
-  // player.create();
-  // g.text(player.idk,GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
 }
 
 
@@ -539,3 +514,28 @@ function mazeMode(g){
      g.ellipse(this.x, this.y, this.radius);
    }
  }
+
+
+ function mousePressed(){
+  if(gameMode == 1){
+    return;
+  }
+  else if (gameMode == 2){
+    player.pressed();
+  } 
+  else if (gameMode == 3){
+    return;
+  }
+}
+
+function mouseReleased(){
+  if(gameMode == 1){
+    return;
+  }
+  else if (gameMode == 2){
+    player.released();
+  } 
+  else if (gameMode == 3){
+    return;
+  } 
+}
