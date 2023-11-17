@@ -67,6 +67,7 @@ function preload(){
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
+  textFont('Verdana');
   scaleX = GAMEBOARD_LEN/(displayWidth-20);
   scaleY = GAMEBOARD_HEIGHT/(displayHeight-140);
   colorMode(RGB);
@@ -155,7 +156,16 @@ function createGameGui(gameMode){ //GAME GUI
   fill(255,255,255);
   textAlign(CENTER, TOP);
   textSize(40);
-  text("TITLE", displayWidth/2, 30);
+  if (gameMode == 1) {
+    text("Keyboard Game", displayWidth/2, 30);
+  }
+  if (gameMode == 2) {
+    text("Maze Game", displayWidth/2, 30);
+  }
+  if (gameMode == 3) {
+    text("Circle Game", displayWidth/2, 30);
+  }
+  
 
 
   //game board
