@@ -44,7 +44,7 @@ let playerY = GAMEBOARD_HEIGHT/2+150;
  let gameDuration = 20; // Game duration in seconds;
  let gameButtons = []; // Array to store game buttons
 var backButton;
-let circleScore;
+let circleScore = 0;
 
 //sounds
 let ding;
@@ -210,6 +210,7 @@ function createGameGui(gameMode){ //GAME GUI
     break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
+      circleGameTimer(circleGame);
     break;
   }
   
@@ -495,10 +496,12 @@ function mazeMode(g){
         if(!circle.isBlue){
           circle.isRed = true;
           buzz.play();
+          circleScore-=.05;
         }
         else if(mouseIsPressed) {
          circles.splice(i, 1); // Remove the clicked circle
-         g.background(0,0,0);      
+         g.background(0,0,0);
+         circleScore+=2      
          ding.play();
        }
       }
@@ -562,7 +565,27 @@ function mazeMode(g){
    }
  }
 
+ function circleGameTimer(g){//   // Display score and timer
+  g.fill(0,0,0);
+  g.noStroke();
+  g.rect(0,5, 1000,20);
+  g.textSize(16);
+  g.fill(255,255,255);
+  g.text("Score: " + Math.ceil(circleScore), 70, 20);
+  remainingTime = max(timer - int((millis() - startKeyboardTime) / 1000), 0);
+  g.fill(0,0,0);
+  g.noStroke();
+  g.rect(GAMEBOARD_LEN - 101,5, 1000,20);
+  g.fill(255,255,255);
+  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 20);
+
+
+  // displaying.splice(0,displaying.length-2);
+  // displaying.push(time);
+}
+
  function restartCircles(){
   circles = [];
   circleScore = 0;
  }
+
