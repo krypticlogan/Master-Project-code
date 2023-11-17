@@ -354,15 +354,15 @@ function keyPressed() {
 
 
 function gameTimer(g){//   // Display score and timer
-  g.textSize(16);
+  g.textSize(32);
   g.fill(0);
-  g.text("Score: " + score, 70, 20);
+  g.text("Score: " + score, 70, 30);
   remainingTime = max(timer - int((millis() - startKeyboardTime) / 1000), 0);
   g.fill(255,255,255);
   g.noStroke();
   g.rect(GAMEBOARD_LEN - 101,5, 1000,20);
   g.fill(0,0,0);
-  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 20);
+  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 65, 30);
 
 
   // displaying.splice(0,displaying.length-2);
