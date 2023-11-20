@@ -171,9 +171,7 @@ function createGameGui(gameMode){ //GAME GUI
   if (gameMode == 3) {
     text("Circle Game", displayWidth/2, 30);
   }
-  if (gameMode == 4) {
-    text("Credits", displayWidth/2, 30)
-  }
+  
   
 
 
@@ -228,6 +226,7 @@ function createGameGui(gameMode){ //GAME GUI
     break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
+    break;
     case 4:
       createCreditsGUI();
     break;
@@ -584,10 +583,22 @@ function mazeMode(g){
 
      //Title
       fill(255,255,255);
-      textAlign(CENTER, TOP);
       textSize(40);
-      text("Credits")
+      text("Credits", displayWidth/2, 35)
 
+    //Credits
+      fill(255);
+      square(displayWidth/4-125, displayHeight/4-85,250);
+      square((displayWidth)/2-125, displayHeight/4-85,250);
+      square(displayWidth*3/4-125, displayHeight/4-85,250);
+      square(displayWidth/2-325, displayHeight/2,250);
+      square((displayWidth)/2+75, displayHeight/2,250);
+      fill(0);
+      textSize(20);
+      text("Joshua Abraham",displayWidth/4-125, displayHeight/4,250);
+      text("Joaquin Gentil Torres",(displayWidth)/2-125, displayHeight/4,250);
+      text("Logan Jones",displayWidth*3/4-125, displayHeight/4,250);
+      text("Austin Mesoke",displayWidth/2-325, displayHeight/2+100,250);
+      text("Shivas Kumar",(displayWidth)/2+75, displayHeight/2+100,250);
       
-    
  }
