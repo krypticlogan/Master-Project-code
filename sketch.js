@@ -35,9 +35,47 @@ let remainingTime;
 
 
 //maze variables
-let playerX = GAMEBOARD_LEN/2;
-let playerY = GAMEBOARD_HEIGHT/2+150;
+var player;
+let playerX;
+let playerY;
+let dragging = false;
+let targetX;
+let targetY;
+let startX;
+let startY;
+let boundingX;
+let boundingY;
+let errors = 0;
+let time;
+let won = false;
+let mazeLevel = 1;
 
+const maze1 = [
+  [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+  [1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1],
+  [1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1],
+];
+
+const maze2 = [
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+  [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0],
+  [0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1],
+  [1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1],
+];
+
+const maze3 = [
+  [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+  [0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+  [0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0],
+  [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+  [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1],
+];
+
+const tileSize = 1250/maze1[0].length;
+let start, target;
  //circle game vars
  var circles = [];
  let startCircleTime;
@@ -67,6 +105,7 @@ function preload(){
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
+  textFont('Verdana');
   scaleX = GAMEBOARD_LEN/(displayWidth-20);
   scaleY = GAMEBOARD_HEIGHT/(displayHeight-140);
   colorMode(RGB);
@@ -130,12 +169,12 @@ function createHomeGui() { //HOME GUI
   
   
   fill(255,255,255);
-  image(keyboardImg,displayWidth/4-125, displayHeight/3,250,250);
-  // square(displayWidth/4-125, displayHeight/3,250);
-  image(mazeImg,(displayWidth)/2-125, displayHeight/3,250,250);
-  // square((displayWidth)/2-125, displayHeight/3,250);
-  image(circleImg,displayWidth*3/4-125, displayHeight/3,250,250);
-  // square(displayWidth*3/4-125, displayHeight/3,250);
+  // image(keyboardImg,displayWidth/4-125, displayHeight/3,250,250);
+  square(displayWidth/4-125, displayHeight/3,250);
+  // image(mazeImg,(displayWidth)/2-125, displayHeight/3,250,250);
+  square((displayWidth)/2-125, displayHeight/3,250);
+  // image(circleImg,displayWidth*3/4-125, displayHeight/3,250,250);
+  square(displayWidth*3/4-125, displayHeight/3,250);
 
   //game descriptions
   fill(255,255,255);
@@ -204,15 +243,62 @@ function createGameGui(gameMode){ //GAME GUI
       gameOver(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
-    let player = drawPlayer(mazeGame,playerX,playerY,'white');
-    movePlayer(mazeGame);
-    break;
+    mazeGame.background(0,0,0);
+      player = new Player(mazeGame, playerX, playerY, 'white');
+      if(dragging){
+        playerX = player.relX + player.offsetX;
+        playerY = player.relY + player.offsetY;
+ 
+      }
+      
+      
+      
+      // ^^ move player logic ^^
+      
+      
+      mazeGame.background(255);
+
+      drawMaze(mazeLevel);
+
+      if ((playerX >= targetX && playerX <= targetX + tileSize) && (playerY >= targetY && playerY <= targetY + tileSize)){
+        mazeLevel++;
+        findStartAndTarget(mazeLevel);
+        dragging = false;
+      }
+
+     
+
+
+      // Draw starting point
+      mazeGame.stroke('green')
+      mazeGame.fill(0, 255, 0); // Green
+      mazeGame.ellipse(start.x * tileSize + tileSize / 2, start.y * tileSize + tileSize / 2, tileSize * 0.8);
+
+      // Draw target
+      mazeGame.stroke('red')
+      mazeGame.fill(255, 0, 0); // Red
+      mazeGame.rect(target.x * tileSize, target.y * tileSize, tileSize, tileSize);
+
+      
+      //drawing player
+      mazeGame.fill('blue');
+      mazeGame.stroke('blue');
+      mazeGame.circle(playerX, playerY, player.r);
+      
+
+      //
+      mazeGame.fill('white');
+      mazeGame.circle(targetX,targetY,20);
+
+        break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
     break;
   }
   
 }
+
+
 
 function back(){
   if(mode == 1){
@@ -236,7 +322,9 @@ function loadGame(){
     //game 2
     if((x >= displayWidth/2-125 && x <= displayWidth/2+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)) {
       mode = 1;
-      gameMode =2;
+      gameMode = 2;
+      playerX = startX + tileSize/2;
+      playerY = startY + tileSize/2;
     }
     
     //game 3
@@ -278,7 +366,6 @@ function keyboardMode(g){
 // let userInput = "";
 // let lastKey;
 // let displaying = [];
-
 
 
   function nextWord(array, index){
@@ -359,77 +446,105 @@ function gameTimer(g){//   // Display score and timer
   // displaying.push(time);
 }
 
-function mousePressed(){
-  if(mode == 1){
-    return;
-  }
-  else if (mode == 2){
-    return;
-  } 
-  else if (mode == 3){
-    return;
-  } 
-}
 
 
-var player;
-let playerSize = 20;
-let playerColor;
+// keyboard game ends
+
 //maze game starts here
-function drawPlayer(g,playerX,playerY,stringColor){
-  let playerColor = color(stringColor);
-  this.playerX = playerX;
-  this.playerY = playerY;
-  g.fill(playerColor);// white or red
-  g.circle(playerX,playerY,playerSize);
-  // function isSelected(){
-  //   if(mouseIsPressed()){
-
-  //   if((mouseX >= x - 10 && mouseX < x  + 10) && (mouseY > y - 10 && mouseY < y + 10)){
-  //     return true;
-  //   }else{
-  //     return false;}
-  // }
-  // }
-
-}
-
-function changeX(newX){
-  playerX = newX;
-}
-
-function changeY(newY){
-  playerY =newY;
-}
-
-function movePlayer(g){
-  let adjX = mouseX-94;
-  let adjY = mouseY-147;
-  g.background(0,0,0);
-  g.circle(mouseX-(displayWidth/2-625),mouseY-(displayHeight/2-300),10);
-  // g.background(0,0,0);
-  let d = dist(adjX, adjY, playerX, playerY);
-       if (d < 10 && mouseIsPressed) {
-         console.log("clicked")
-        //  changeX(mouseX);
-        //  changeY(mouseY);
-        //  drawPlayer(mazeGame,playerX,playerY,'white');
-        //  g.background(0,0,0);       
-       }
-}
-
-function playerSelected(){
-  return;
-}
-function changeColor(newColor){
-  if(newColor == red){
-    g.fill(170,0,0);
+class Player {
+  constructor(g,pX,pY,pColor){
+    this.g = g;
+    this.x = pX;
+    this.y = pY;
+    this.color = pColor;
+    this.r = 40;
+    this.dragging = false;
+    this.touching = false;
+    this.relX = mouseX-(displayWidth/2-625);
+    this.relY = mouseY-(displayHeight/2-300);
+    this.offsetX = 0;
+    this.offsetY = 0;
   }
-  if(newColor == white){
-    g.fill(255,255,255);
-  }
+
+  // show(){
+  //   if(this.dragging){
+  //     this.g.fill(200,0,200);
+  //   } else {
+  //     this.g.fill(255,255,255);
+  //   }
+  //   this.g.circle(this.x,this.y,this.r);
+  // }
 }
 
+
+
+
+    
+  function findStartAndTarget(level) {
+            // Found an empty space, set it as the starting point
+            if(level === 1){
+              start = createVector(0, 0);    
+              target = createVector(6,3);
+            }
+            else if (level === 2){
+              start = createVector(1, 4);    
+              target = createVector(1, 0);
+            } 
+            else if(level === 3){
+              start = createVector(11,2);
+              target = createVector(0,0);
+            }
+            
+            startX = start.x *tileSize;
+            startY = start.y *tileSize;
+            // Find a random empty space for the target
+              targetX = target.x *tileSize;
+              targetY = target.y *tileSize;
+
+            restartPlayer();
+              return;
+            }
+
+    function drawMaze(level){
+      let maze;
+
+      if(level === 1){
+        maze = maze1;
+      }
+      else if (level === 2){
+        maze = maze2;
+      } 
+      else if(level === 3){
+        maze = maze3;
+      }
+        for (let i = 0; i < maze.length; i++) {
+          for (let j = 0; j < maze[i].length; j++) {
+            if (maze[i][j] === 1) {
+              mazeGame.stroke('black');
+              mazeGame.fill(0); // Wall
+              mazeGame.rect(j * tileSize, i * tileSize, tileSize, tileSize);
+              boundingX = j * tileSize;
+              boundingY = i * tileSize;
+              if ((playerX+player.r/2 >= boundingX && playerX-player.r/2 <= boundingX + tileSize) && (playerY+player.r/2 >= boundingY && playerY-player.r/2 <= boundingY + tileSize)){
+                restartPlayer();
+                dragging = false;
+              }
+              // console.log(i + " " + j);
+              // mazeGame.fill('pink');
+              // mazeGame.circle(boundingX,boundingY,20);
+            } else {
+              mazeGame.stroke('white');
+              mazeGame.fill(255); // Path
+              mazeGame.rect(j * tileSize, i * tileSize, tileSize, tileSize);
+            }
+          }
+        }
+    }
+
+    function restartPlayer(){
+      playerX = startX + tileSize/2;
+      playerY = startY + tileSize/2;
+    }
 
 
 function mazeMode(g){
@@ -439,21 +554,8 @@ function mazeMode(g){
   g.fill(30,70,100);
   g.textSize(20);
 
-  // let player = createPlayer(g);
-  // player.changeColor(red);
-
-  // if(player.isSelected()){
-  //   // player.changeX(mouseX);
-  //   // player.changeY(mouseY);
-  //   return;
-  // } 
-  
-
-
   //game logic starts here
-
-  // player.create();
-  // g.text(player.idk,GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
+  findStartAndTarget(mazeLevel);
 }
 
 
@@ -472,7 +574,6 @@ function mazeMode(g){
   }
  function startCircleGame() {
    createCircles(10); // Create 10 circles for the game
-   console.log(circles);
  }
 
  function playCircleGame(g) {
@@ -546,3 +647,37 @@ function mazeMode(g){
      g.ellipse(this.x, this.y, this.radius);
    }
  }
+
+
+ function mousePressed(){
+  if(gameMode == 1){
+    return;
+  }
+  else if (gameMode == 2){
+    let d = dist(player.relX,player.relY, playerX, playerY);
+      if (d < player.r / 2) {
+        dragging = true;
+        player.offsetX = player.x - player.relX;
+        player.offsetY = player.y - player.relY;
+            }
+            else{
+              dragging = false;
+            }
+    // return;
+    }
+  else if (gameMode == 3){
+    return;
+  }
+}
+
+function mouseReleased(){
+  if(gameMode == 1){
+    return;
+  }
+  else if (gameMode == 2){
+      dragging = false;
+  } 
+  else if (gameMode == 3){
+    return;
+  } 
+}
