@@ -35,10 +35,47 @@ let remainingTime;
 
 
 //maze variables
-let player;
-let playerX = GAMEBOARD_LEN/2;
-let playerY = GAMEBOARD_HEIGHT/2+150;
+var player;
+let playerX;
+let playerY;
+let dragging = false;
+let targetX;
+let targetY;
+let startX;
+let startY;
+let boundingX;
+let boundingY;
+let errors = 0;
+let time;
+let won = false;
+let mazeLevel = 1;
 
+const maze1 = [
+  [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+  [1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1],
+  [1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1],
+];
+
+const maze2 = [
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+  [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0],
+  [0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1],
+  [1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1],
+];
+
+const maze3 = [
+  [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+  [0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+  [0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0],
+  [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+  [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1],
+];
+
+const tileSize = 1250/maze1[0].length;
+let start, target;
  //circle game vars
  var circles = [];
  let startCircleTime;
@@ -53,11 +90,11 @@ var backButton;
 // let score = 0;
 // let timer = 30;
 
-function preload() {
-    keyboardImg = loadImage('Images/keyboard game image.png');
-    circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
-    mazeImg = loadImage('Images/maze image.jpeg')
-  }
+// function preload() {
+//     keyboardImg = loadImage('Images/keyboard game image.png');
+//     circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
+//     mazeImg = loadImage('Images/maze image.jpeg')
+//   }
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
@@ -125,12 +162,12 @@ function createHomeGui() { //HOME GUI
   
   
   fill(255,255,255);
-  image(keyboardImg,displayWidth/4-125, displayHeight/3,250,250);
-  // square(displayWidth/4-125, displayHeight/3,250);
-  image(mazeImg,(displayWidth)/2-125, displayHeight/3,250,250);
-  // square((displayWidth)/2-125, displayHeight/3,250);
-  image(circleImg,displayWidth*3/4-125, displayHeight/3,250,250);
-  // square(displayWidth*3/4-125, displayHeight/3,250);
+  // image(keyboardImg,displayWidth/4-125, displayHeight/3,250,250);
+  square(displayWidth/4-125, displayHeight/3,250);
+  // image(mazeImg,(displayWidth)/2-125, displayHeight/3,250,250);
+  square((displayWidth)/2-125, displayHeight/3,250);
+  // image(circleImg,displayWidth*3/4-125, displayHeight/3,250,250);
+  square(displayWidth*3/4-125, displayHeight/3,250);
 
   //game descriptions
   fill(255,255,255);
@@ -201,17 +238,60 @@ function createGameGui(gameMode){ //GAME GUI
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
     mazeGame.background(0,0,0);
       player = new Player(mazeGame, playerX, playerY, 'white');
-      // player.show();
-      player.mouseOver();
-      player.update();
-      player.show();
-    break;
+      if(dragging){
+        playerX = player.relX + player.offsetX;
+        playerY = player.relY + player.offsetY;
+ 
+      }
+      
+      
+      
+      // ^^ move player logic ^^
+      
+      
+      mazeGame.background(255);
+
+      drawMaze(mazeLevel);
+
+      if ((playerX >= targetX && playerX <= targetX + tileSize) && (playerY >= targetY && playerY <= targetY + tileSize)){
+        mazeLevel++;
+        findStartAndTarget(mazeLevel);
+        dragging = false;
+      }
+
+     
+
+
+      // Draw starting point
+      mazeGame.stroke('green')
+      mazeGame.fill(0, 255, 0); // Green
+      mazeGame.ellipse(start.x * tileSize + tileSize / 2, start.y * tileSize + tileSize / 2, tileSize * 0.8);
+
+      // Draw target
+      mazeGame.stroke('red')
+      mazeGame.fill(255, 0, 0); // Red
+      mazeGame.rect(target.x * tileSize, target.y * tileSize, tileSize, tileSize);
+
+      
+      //drawing player
+      mazeGame.fill('blue');
+      mazeGame.stroke('blue');
+      mazeGame.circle(playerX, playerY, player.r);
+      
+
+      //
+      mazeGame.fill('white');
+      mazeGame.circle(targetX,targetY,20);
+
+        break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
     break;
   }
   
 }
+
+
 
 function back(){
   if(mode == 1){
@@ -235,7 +315,9 @@ function loadGame(){
     //game 2
     if((x >= displayWidth/2-125 && x <= displayWidth/2+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)) {
       mode = 1;
-      gameMode =2;
+      gameMode = 2;
+      playerX = startX + tileSize/2;
+      playerY = startY + tileSize/2;
     }
     
     //game 3
@@ -277,7 +359,6 @@ function keyboardMode(g){
 // let userInput = "";
 // let lastKey;
 // let displaying = [];
-
 
 
   function nextWord(array, index){
@@ -366,7 +447,7 @@ class Player {
     this.x = pX;
     this.y = pY;
     this.color = pColor;
-    this.r = 20;
+    this.r = 40;
     this.dragging = false;
     this.touching = false;
     this.relX = mouseX-(displayWidth/2-625);
@@ -375,43 +456,86 @@ class Player {
     this.offsetY = 0;
   }
 
-  show(){
-    if(this.touching){
-      this.g.fill(200,0,200);
-    } else {
-      this.g.fill(255,255,255);
-    }
-    this.g.circle(this.x,this.y,this.r);
-  }
-
-  update(){
-    if(this.dragging){
-    this.x = this.relX + this.offsetX;
-    this.y = this.relY + this.offsetY;
-    }
-  }
-
-  mouseOver(){
-    let d = dist(this.relX, this.relY, this.x, this.y);
-    if (d < this.r/2){
-      this.touching = true;
-    }
-  }
-
-  pressed(){
-    let d = dist(this.relX, this.relY, this.x, this.y);
-    if (d < this.r/2){
-      this.dragging = true;
-
-      this.offsetX = this.x - this.relX;
-      this.offsetY = this.y - this.relY;
-    }
-  }
-
-  released(){
-    this.dragging = false;
-  }
+  // show(){
+  //   if(this.dragging){
+  //     this.g.fill(200,0,200);
+  //   } else {
+  //     this.g.fill(255,255,255);
+  //   }
+  //   this.g.circle(this.x,this.y,this.r);
+  // }
 }
+
+
+
+
+    
+  function findStartAndTarget(level) {
+            // Found an empty space, set it as the starting point
+            if(level === 1){
+              start = createVector(0, 0);    
+              target = createVector(6,3);
+            }
+            else if (level === 2){
+              start = createVector(1, 4);    
+              target = createVector(1, 0);
+            } 
+            else if(level === 3){
+              start = createVector(11,2);
+              target = createVector(0,0);
+            }
+            
+            startX = start.x *tileSize;
+            startY = start.y *tileSize;
+            // Find a random empty space for the target
+              targetX = target.x *tileSize;
+              targetY = target.y *tileSize;
+
+            restartPlayer();
+              return;
+            }
+
+    function drawMaze(level){
+      let maze;
+
+      if(level === 1){
+        maze = maze1;
+      }
+      else if (level === 2){
+        maze = maze2;
+      } 
+      else if(level === 3){
+        maze = maze3;
+      }
+        for (let i = 0; i < maze.length; i++) {
+          for (let j = 0; j < maze[i].length; j++) {
+            if (maze[i][j] === 1) {
+              mazeGame.stroke('black');
+              mazeGame.fill(0); // Wall
+              mazeGame.rect(j * tileSize, i * tileSize, tileSize, tileSize);
+              boundingX = j * tileSize;
+              boundingY = i * tileSize;
+              if ((playerX+player.r/2 >= boundingX && playerX-player.r/2 <= boundingX + tileSize) && (playerY+player.r/2 >= boundingY && playerY-player.r/2 <= boundingY + tileSize)){
+                restartPlayer();
+                dragging = false;
+              }
+              // console.log(i + " " + j);
+              // mazeGame.fill('pink');
+              // mazeGame.circle(boundingX,boundingY,20);
+            } else {
+              mazeGame.stroke('white');
+              mazeGame.fill(255); // Path
+              mazeGame.rect(j * tileSize, i * tileSize, tileSize, tileSize);
+            }
+          }
+        }
+    }
+
+    function restartPlayer(){
+      playerX = startX + tileSize/2;
+      playerY = startY + tileSize/2;
+    }
+
 
 function mazeMode(g){
   g.textAlign(CENTER);
@@ -421,7 +545,7 @@ function mazeMode(g){
   g.textSize(20);
 
   //game logic starts here
-
+  findStartAndTarget(mazeLevel);
 }
 
 
@@ -440,7 +564,6 @@ function mazeMode(g){
   }
  function startCircleGame() {
    createCircles(10); // Create 10 circles for the game
-   console.log(circles);
  }
 
  function playCircleGame(g) {
@@ -521,8 +644,17 @@ function mazeMode(g){
     return;
   }
   else if (gameMode == 2){
-    player.pressed();
-  } 
+    let d = dist(player.relX,player.relY, playerX, playerY);
+      if (d < player.r / 2) {
+        dragging = true;
+        player.offsetX = player.x - player.relX;
+        player.offsetY = player.y - player.relY;
+            }
+            else{
+              dragging = false;
+            }
+    // return;
+    }
   else if (gameMode == 3){
     return;
   }
@@ -533,7 +665,7 @@ function mouseReleased(){
     return;
   }
   else if (gameMode == 2){
-    player.released();
+      dragging = false;
   } 
   else if (gameMode == 3){
     return;
