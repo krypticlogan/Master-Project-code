@@ -297,9 +297,6 @@ function createGameGui(gameMode){ //GAME GUI
       
 
       //
-      mazeGame.fill('white');
-      mazeGame.circle(targetX,targetY,20);
-
         break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
