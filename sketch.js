@@ -169,12 +169,12 @@ function createHomeGui() { //HOME GUI
   
   
   fill(255,255,255);
-  // image(keyboardImg,displayWidth/4-125, displayHeight/3,250,250);
-  square(displayWidth/4-125, displayHeight/3,250);
-  // image(mazeImg,(displayWidth)/2-125, displayHeight/3,250,250);
-  square((displayWidth)/2-125, displayHeight/3,250);
-  // image(circleImg,displayWidth*3/4-125, displayHeight/3,250,250);
-  square(displayWidth*3/4-125, displayHeight/3,250);
+  image(keyboardImg,displayWidth/4-125, displayHeight/3,250,250);
+  // square(displayWidth/4-125, displayHeight/3,250);
+  image(mazeImg,(displayWidth)/2-125, displayHeight/3,250,250);
+  // square((displayWidth)/2-125, displayHeight/3,250);
+  image(circleImg,displayWidth*3/4-125, displayHeight/3,250,250);
+  // square(displayWidth*3/4-125, displayHeight/3,250);
 
   //game descriptions
   fill(255,255,255);
