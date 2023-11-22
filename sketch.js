@@ -183,6 +183,12 @@ function createHomeGui() { //HOME GUI
   text("Keyboard Game", displayWidth/4, displayHeight/3 + 280);
   text("Maze Game", displayWidth/2, displayHeight/3 + 280);
   text("Circle Game", displayWidth*3/4, displayHeight/3 + 280);
+
+  fill(255);
+  rect(displayWidth-200,displayHeight/2+210,100,30);
+  textSize(15);
+  fill(0);
+  text("Credits", displayWidth-160,displayHeight/2+220)
 }
 
 
