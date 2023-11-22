@@ -693,15 +693,15 @@ function mazeMode(g){
   g.fill(0,0,0);
   g.noStroke();
   g.rect(0,5, 1000,20);
-  g.textSize(16);
+  g.textSize(32);
   g.fill(255,255,255);
-  g.text("Score: " + Math.ceil(circleScore), 70, 20);
+  g.text("Score: " + Math.ceil(circleScore), 70, 30);
   remainingTime = max(timer - int((millis() - startKeyboardTime) / 1000), 0);
   g.fill(0,0,0);
   g.noStroke();
   g.rect(GAMEBOARD_LEN - 101,5, 1000,20);
   g.fill(255,255,255);
-  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 20);
+  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 60, 30);
 
 
   // displaying.splice(0,displaying.length-2);
