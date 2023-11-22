@@ -308,6 +308,9 @@ function createGameGui(gameMode){ //GAME GUI
       playCircleGame(circleGame);
       circleGameTimer(circleGame);
     break;
+    case 4:
+      createCreditsGUI();
+      break;
   }
   
 }
@@ -349,6 +352,10 @@ function loadGame(){
       gameMode = 3;
       startCircleGame();
       // circleMode();
+    }
+    if((x >= displayWidth-200 && x<= displayWidth-100)&&(y >= displayHeight/2+210 && y <= displayHeight/2+240)){
+      mode = 1;
+      gameMode = 4;
     }
   }
 }
@@ -712,3 +719,33 @@ function mazeMode(g){
   circles = [];
   circleScore = 0;
  }
+ 
+ function createCreditsGUI(){ //Credits GUI
+  
+  clear();
+  background(48,25,52);
+  fill(19,68,50);//dark green
+  rect(0,0, displayWidth, 100);
+
+ //Title
+  fill(255,255,255);
+  textSize(40);
+  text("Credits", displayWidth/2, 35)
+
+//Credits
+  fill(255);
+  square(displayWidth/4-125, displayHeight/4-85,250);
+  square((displayWidth)/2-125, displayHeight/4-85,250);
+  square(displayWidth*3/4-125, displayHeight/4-85,250);
+  square(displayWidth/2-325, displayHeight/2,250);
+  square((displayWidth)/2+75, displayHeight/2,250);
+  fill(0);
+  textSize(20);
+  text("Joshua Abraham",displayWidth/4-125, displayHeight/4,250);
+  text("Joaquin Gentil Torres",(displayWidth)/2-125, displayHeight/4,250);
+  text("Logan Jones",displayWidth*3/4-125, displayHeight/4,250);
+  text("Austin Mesoke",displayWidth/2-325, displayHeight/2+100,250);
+  text("Shivas Kumar",(displayWidth)/2+75, displayHeight/2+100,250);
+  
+}
+
