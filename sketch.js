@@ -33,6 +33,11 @@ let timer = 30;
 let remainingTime;
   
 
+
+//maze variables
+let playerX = GAMEBOARD_LEN/2;
+let playerY = GAMEBOARD_HEIGHT/2+150;
+
  //circle game vars
  var circles = [];
  let startCircleTime;
@@ -200,8 +205,6 @@ function createGameGui(gameMode){ //GAME GUI
       gameOver(keyboardGame);
     break;
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
-    let player = drawPlayer(mazeGame,playerX,playerY,'white');
-    movePlayer(mazeGame);
     break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
       playCircleGame(circleGame);
@@ -367,8 +370,18 @@ function mousePressed(){
   } 
 }
 
+
+
 //maze game starts here
 
+
+function mazeMode(g){
+  g.textAlign(CENTER);
+  g.push();
+  g.background(0,0,0);
+  g.fill(30,70,100);
+  g.textSize(20);
+}
   
 //maze game ends here
 
