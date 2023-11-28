@@ -8,6 +8,8 @@ let circleImg;
 let mazeImg;
 let scaleX;
 let scaleY;
+var adjX;
+var adjY;
  //buttons
  var instructionExit;
  var restart;
@@ -116,6 +118,8 @@ function setup() {
   backButton = createButton("Back");
 }
 function draw() {
+  adjX = mouseX-(displayWidth/2-625);
+  adjY = mouseY-(displayHeight/2-300);
   clear();
   background(48,25,52);
   //home screen
@@ -529,7 +533,7 @@ function mazeMode(g){
   g.textSize(20);
   }
  function startCircleGame() {
-   createCircles(10); // Create 10 circles for the game
+   createCircles(20); // Create 10 circles for the game
  }
 
  function playCircleGame(g) {
@@ -541,9 +545,7 @@ function mazeMode(g){
      for (let i = circles.length - 1; i >= 0; i--) {
        let circle = circles[i];
        circle.display(g);
-       let adjX = mouseX-94;
-       let adjY = mouseY-147;
-       let d = dist(adjX, adjY, circle.x, circle.y);
+      let d = dist(adjX, adjY, circle.x, circle.y);
        if (d < circle.radius / 2){
         if(!circle.isBlue){
           circle.isRed = true;
@@ -599,11 +601,15 @@ function mazeMode(g){
      this.y = y;
      this.radius = radius;
      this.isBlue = isBlue;
+     this.isRed = false;
    }
 
    display(g) {
      if (this.isBlue) {
        g.fill(0, 0, 255);
+     }
+     else if (this.isRed){
+      g.fill(255,0,0);
      } else {
        g.fill(255);
      }
@@ -643,7 +649,7 @@ function mouseReleased(){
   else if (gameMode == 3){
     return;
   } 
-}
+
  }
 
  function restartCircles(){
