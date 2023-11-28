@@ -90,11 +90,16 @@ var backButton;
 // let score = 0;
 // let timer = 30;
 
-// function preload() {
-//     keyboardImg = loadImage('Images/keyboard game image.png');
-//     circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
-//     mazeImg = loadImage('Images/maze image.jpeg')
-//   }
+
+function preload(){
+  soundFormats('mp3');
+  ding = loadSound('sounds/dingy.mp3')
+  buzz = loadSound('sounds/buzzy.mp3')
+
+  keyboardImg = loadImage('Images/keyboard game image.png');
+  circleImg = loadImage('Images/Screen Shot 2023-11-14 at 7.14.44 PM.png');
+  mazeImg = loadImage('Images/maze image.jpeg')
+  }
 
 function setup() {
   createCanvas(displayWidth-20, displayHeight-140);
@@ -280,8 +285,8 @@ function createGameGui(gameMode){ //GAME GUI
       
 
       //
-      mazeGame.fill('white');
-      mazeGame.circle(targetX,targetY,20);
+//       mazeGame.fill('white');
+//       mazeGame.circle(targetX,targetY,20);
 
         break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
@@ -537,6 +542,9 @@ class Player {
     }
 
 
+//maze game starts here
+
+
 function mazeMode(g){
   g.textAlign(CENTER);
   g.push();
@@ -547,9 +555,6 @@ function mazeMode(g){
   //game logic starts here
   findStartAndTarget(mazeLevel);
 }
-
-
-
   
 //maze game ends here
 
