@@ -33,11 +33,6 @@ let timer = 30;
 let remainingTime;
   
 
-
-//maze variables
-let playerX = GAMEBOARD_LEN/2;
-let playerY = GAMEBOARD_HEIGHT/2+150;
-
  //circle game vars
  var circles = [];
  let startCircleTime;
@@ -55,11 +50,6 @@ let buzz;
 // let score = 0;
 // let timer = 30;
 
-function preload(){
-  soundFormats('mp3');
-  ding = loadSound('sounds/dingy.mp3')
-  buzz = loadSound('sounds/buzzy.mp3')
-}
 
 function preload(){
   soundFormats('mp3');
@@ -377,92 +367,7 @@ function mousePressed(){
   } 
 }
 
-
-var player;
-let playerSize = 20;
-let playerColor;
 //maze game starts here
-function drawPlayer(g,playerX,playerY,stringColor){
-  let playerColor = color(stringColor);
-  this.playerX = playerX;
-  this.playerY = playerY;
-  g.fill(playerColor);// white or red
-  g.circle(playerX,playerY,playerSize);
-  // function isSelected(){
-  //   if(mouseIsPressed()){
-
-  //   if((mouseX >= x - 10 && mouseX < x  + 10) && (mouseY > y - 10 && mouseY < y + 10)){
-  //     return true;
-  //   }else{
-  //     return false;}
-  // }
-  // }
-
-}
-
-function changeX(newX){
-  playerX = newX;
-}
-
-function changeY(newY){
-  playerY =newY;
-}
-
-function movePlayer(g){
-  let adjX = mouseX-94;
-  let adjY = mouseY-147;
-  g.background(0,0,0);
-  g.circle(mouseX-(displayWidth/2-625),mouseY-(displayHeight/2-300),10);
-  // g.background(0,0,0);
-  let d = dist(adjX, adjY, playerX, playerY);
-       if (d < 10 && mouseIsPressed) {
-         console.log("clicked")
-        //  changeX(mouseX);
-        //  changeY(mouseY);
-        //  drawPlayer(mazeGame,playerX,playerY,'white');
-        //  g.background(0,0,0);       
-       }
-}
-
-function playerSelected(){
-  return;
-}
-function changeColor(newColor){
-  if(newColor == red){
-    g.fill(170,0,0);
-  }
-  if(newColor == white){
-    g.fill(255,255,255);
-  }
-}
-
-
-
-function mazeMode(g){
-  g.textAlign(CENTER);
-  g.push();
-  g.background(0,0,0);
-  g.fill(30,70,100);
-  g.textSize(20);
-
-  // let player = createPlayer(g);
-  // player.changeColor(red);
-
-  // if(player.isSelected()){
-  //   // player.changeX(mouseX);
-  //   // player.changeY(mouseY);
-  //   return;
-  // } 
-  
-
-
-  //game logic starts here
-
-  // player.create();
-  // g.text(player.idk,GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2);
-}
-
-
 
   
 //maze game ends here
