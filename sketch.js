@@ -30,6 +30,7 @@ let startKeyboardTime;
 let keyboardScore = 0;
 let timer = 30;
 let remainingTime;
+var keyHiScore = 0;
   
 //maze variables
 var player;
@@ -42,10 +43,11 @@ let startX;
 let startY;
 let boundingX;
 let boundingY;
-let errors = 0;
-let time;
+let collisions = 0;
+let timeElapsed = 0;
 let won = false;
 let mazeLevel = 1;
+let mazeHiScore;
 
 const maze1 = [
   [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
@@ -81,7 +83,8 @@ var backButton;
 let circleScore = 0;
 let startCircleTime;
 let playing = false;
-
+let errors = 0;
+let circleHiScore; 
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
@@ -221,7 +224,7 @@ function createGameGui(gameMode){ //GAME GUI
   // instructionExit.mousePressed();
  
   switch(gameMode){
-    
+    //keyboard
     case 1: 
     // startKeyboardTime = millis();
    
@@ -233,14 +236,18 @@ function createGameGui(gameMode){ //GAME GUI
       checkWord(keyboardGame);
       gameTimer(keyboardGame);
       gameOver(keyboardGame);
+      if(keyboardScore > keyHiScore){
+        keyHiScore = keyboardScore;
+      }
     break;
+    //maze game
     case 2: image(mazeGame,displayWidth/2-625, displayHeight/2-300);
       mazeGame.background(0,0,0);
       player = new Player(mazeGame, playerX, playerY, 'white');
+    if(playing){
       if(dragging){
         playerX = player.relX + player.offsetX;
         playerY = player.relY + player.offsetY;
- 
       }
       
       // ^^ move player logic ^^
@@ -249,12 +256,19 @@ function createGameGui(gameMode){ //GAME GUI
       mazeGame.background(255);
 
       drawMaze(mazeLevel);
-
+    
+      //when the player hits the target
       if ((playerX >= targetX && playerX <= targetX + tileSize) && (playerY >= targetY && playerY <= targetY + tileSize)){
+        if(mazeLevel < 3){
         mazeLevel++;
         findStartAndTarget(mazeLevel);
         dragging = false;
+        }
+        else{
+          playing = false;
+        }
       }
+      
 
       // Draw starting point
       mazeGame.stroke('green')
@@ -271,11 +285,11 @@ function createGameGui(gameMode){ //GAME GUI
       mazeGame.fill('blue');
       mazeGame.stroke('blue');
       mazeGame.circle(playerX, playerY, player.r);
-      
-
-      //
-      mazeGame.fill('white');
-      mazeGame.circle(targetX,targetY,20);
+      runTimer();
+      }
+      else{
+        endMaze();
+      }
         break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
         playCircleGame(circleGame);
@@ -297,7 +311,6 @@ function back(){
     }
 
   if(gameMode == 3){
-    circleGame.background(0);
     restartCircles();
   }
 }
@@ -324,6 +337,8 @@ function loadGame(){
       gameMode = 2;
       playerX = startX + tileSize/2;
       playerY = startY + tileSize/2;
+      playing = true;
+      mazeStartTime = Date.now();
     }
     
     //game 3
@@ -387,6 +402,7 @@ function checkWord(){
     ding.play();
   }
 }
+
 function displayWord(g){
   for (let i = 0; i < currentWord.length; i++) {
         if (i === letterIndex) {
@@ -403,16 +419,22 @@ function displayWord(g){
         g.text(currentWord[i], GAMEBOARD_LEN / 2 - (currentWord.length / 2 - i) * 20, GAMEBOARD_HEIGHT / 2 + 40);
       }
 }
+
 function gameOver(g){
 if (remainingTime <= 1) {
   g.background(255,255,255); // Set the background to white
   g.textSize(32);
   g.fill(0);
   g.text("Game Over", GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 - 20);
+  if(keyboardScore === keyHiScore){
+    g.text("New High Score!\nYour Score: " + keyboardScore,GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2 + 20);
+  }else{
   g.text("Your score: " + keyboardScore, GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 + 20);
+  }
   g.noLoop();
 }
 }
+
 function keyPressed() {
   if (keyCode >= 65 && keyCode <= 90) { // Check if it's a valid letter key
     let currentLetter = currentWord[letterIndex];
@@ -431,6 +453,10 @@ function gameTimer(g){//   // Display keyboardScore and timer
   g.fill(0);
   g.text("Score: " + keyboardScore, 70, 30);
   remainingTime = max(timer + int((startKeyboardTime - Date.now()) / 1000), 0);
+  g.fill(255);
+  g.rect(GAMEBOARD_LEN/2-100,0,200,50);
+  g.fill(0);
+  g.text("High Score: " + keyHiScore, GAMEBOARD_LEN/2,30);
   g.fill(255,255,255);
   g.rect(GAMEBOARD_LEN - 101,5, 1000, 30);
   g.fill(0,0,0);
@@ -492,7 +518,7 @@ class Player {
             
             startX = start.x *tileSize;
             startY = start.y *tileSize;
-            // Find a random empty space for the target
+            //find coordinates for start and target
               targetX = target.x *tileSize;
               targetY = target.y *tileSize;
 
@@ -512,6 +538,7 @@ class Player {
       else if(level === 3){
         maze = maze3;
       }
+
         for (let i = 0; i < maze.length; i++) {
           for (let j = 0; j < maze[i].length; j++) {
             if (maze[i][j] === 1) {
@@ -523,6 +550,7 @@ class Player {
               if ((playerX+player.r/2 >= boundingX && playerX-player.r/2 <= boundingX + tileSize) && (playerY+player.r/2 >= boundingY && playerY-player.r/2 <= boundingY + tileSize)){
                 restartPlayer();
                 dragging = false;
+                collisions++;
               }
               // console.log(i + " " + j);
               // mazeGame.fill('pink');
@@ -540,6 +568,11 @@ class Player {
       playerX = startX + tileSize/2;
       playerY = startY + tileSize/2;
     }
+
+    function runTimer(){
+      timeElapsed = (Date.now() - mazeStartTime) / 1000;
+    }
+
 
 function mazeMode(g){
   g.textAlign(CENTER);
@@ -561,6 +594,12 @@ function mazeMode(g){
 
   //game logic starts here
   findStartAndTarget(mazeLevel);
+}
+
+function endMaze(){
+  mazeGame.background(0);
+  mazeGame.fill(255);
+  mazeGame.text("Congratulations it took you " + timeElapsed + " seconds to complete the game! \n You made " + collisions + " mistake(s). Try Again?" , GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
 }
   
 //maze game ends here
@@ -598,12 +637,10 @@ let hasBlue = true;
 let finishTime;
  function playCircleGame(g) {
   // g.background(48, 25, 52);      
-   let timeLeft = (circleTimer - startCircleTime) / 1000; // Calculate elapsed time in seconds
    playing = true;
    if (!hasBlue) {//if there are no more blue circles
     // createCircles(5,.9);
     endGame();
-    playing = false;
     } else {
     hasBlue = false;
      for (let i = circles.length - 1; i >= 0; i--) { //for each circle
@@ -639,6 +676,7 @@ let finishTime;
    circleGame.fill(255);
    circleGame.text("Game Over \nYou clicked "+ circleScore + " circles in " + finishTime + " seconds!\n" + "Errors: " + errors ,GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
   //  circleGame.noLoop();
+  playing = false;
  }
  
  const desiredSpacing = 2; // Adjust the desired spacing between circles
@@ -755,10 +793,12 @@ function mouseReleased(){
   else if (gameMode == 3){
     return;
   } 
-
  }
 
  function restartCircles(){
   circles = [];
   circleScore = 0;
+  circleGame.background(0);
+  hasBlue = true;
+  errors = 0;
  }
