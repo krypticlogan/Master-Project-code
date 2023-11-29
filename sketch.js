@@ -160,9 +160,9 @@ function createHomeGui() { //HOME GUI
   //game descriptions
   fill(255,255,255);
   textSize(18);
-  text("Keyboard Game", displayWidth/4, displayHeight/3 + 280);
-  text("Maze Game", displayWidth/2, displayHeight/3 + 280);
-  text("Circle Game", displayWidth*3/4, displayHeight/3 + 280);
+  text("Quick Type", displayWidth/4, displayHeight/3 + 280);
+  text("Maze Runner", displayWidth/2, displayHeight/3 + 280);
+  text("Circle Click", displayWidth*3/4, displayHeight/3 + 280);
 
   fill(255);
   rect(displayWidth-200,displayHeight/2+210,100,30);
@@ -180,13 +180,13 @@ function createGameGui(gameMode){ //GAME GUI
   textSize(40);
   
   if (gameMode == 1) {
-    text("Keyboard Game", displayWidth/2, 30);
+    text("Quick Type", displayWidth/2, 30);
   }
   if (gameMode == 2) {
-    text("Maze Game", displayWidth/2, 30);
+    text("Maze Runner", displayWidth/2, 30);
   }
   if (gameMode == 3) {
-    text("Circle Game", displayWidth/2, 30);
+    text("Circle Click", displayWidth/2, 30);
   }
   
   
