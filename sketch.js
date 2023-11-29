@@ -27,7 +27,7 @@ let displaying = [];
 let display;
 var userWord;
 let startKeyboardTime;
-let score = 0;
+let keyboardScore = 0;
 let timer = 30;
 let remainingTime;
   
@@ -75,17 +75,18 @@ const tileSize = 1250/maze1[0].length;
 let start, target;
  //circle game vars
  var circles = [];
- let startCircleTime;
  let gameDuration = 20; // Game duration in seconds;
  let gameButtons = []; // Array to store game buttons
 var backButton;
-let circleScore;
+let circleScore = 0;
+let startCircleTime;
+
 
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
 // let startKeyboardTime;
-// let score = 0;
+// let keyboardScore = 0;
 // let timer = 30;
 
 function preload(){
@@ -108,7 +109,6 @@ function setup() {
   mazeGame = createGraphics(GAMEBOARD_LEN, GAMEBOARD_HEIGHT);
   keyboardGame = createGraphics(GAMEBOARD_LEN,GAMEBOARD_HEIGHT);
   userInput = "";
-  startKeyboardTime = millis();
   // circleGame.background(0,0,0);
   circleMode(circleGame); 
   // startCircleGame();
@@ -264,6 +264,7 @@ function createGameGui(gameMode){ //GAME GUI
         break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
         playCircleGame(circleGame);
+        circleGameTimer(circleGame);
     break;
   }
   
@@ -274,6 +275,11 @@ function back(){
     mode = 0;
     backButton.remove();
     }
+
+  if(gameMode == 3){
+    circleGame.background(0);
+    restartCircles();
+  }
 }
 
 function loadGame(){
@@ -282,8 +288,15 @@ function loadGame(){
     let y = mouseY;
     //game 1
     if((x >= displayWidth/4-125 && x<= displayWidth/4+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)){
+
+      keyboardGame.clear();
+      currentWord = ""; // Index of the current letter being typed
+  wordIndex = 0;
+  nextWord(words, wordIndex);
       mode = 1;
       gameMode = 1;
+      startKeyboardTime = Date.now();
+      keyboardScore = 0;
     }
     //game 2
     if((x >= displayWidth/2-125 && x <= displayWidth/2+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)) {
@@ -297,6 +310,7 @@ function loadGame(){
     if((x >= displayWidth*3/4-125 && x <= displayWidth*3/4+125)&&(y >= displayHeight/3 && y <= displayHeight/3+250)) {
       mode = 1;
       gameMode = 3;
+      startCircleTime = Date.now();
       startCircleGame();
       // circleMode();
     }
@@ -339,7 +353,7 @@ function keyboardMode(g){
 function checkWord(){
     // Check if the word is completed
   if (letterIndex >= currentWord.length) {
-    score++;
+    keyboardScore++;
     wordIndex++;
     keyboardGame.clear();
     if (wordIndex >= words.length) {
@@ -371,7 +385,7 @@ if (remainingTime <= 1) {
   g.textSize(32);
   g.fill(0);
   g.text("Game Over", GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 - 20);
-  g.text("Your Score: " + score, GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 + 20);
+  g.text("Your score: " + keyboardScore, GAMEBOARD_LEN / 2, GAMEBOARD_HEIGHT / 2 + 20);
   g.noLoop();
 }
 }
@@ -385,14 +399,14 @@ function keyPressed() {
     else{buzz.play();}
   }
 }
-function gameTimer(g){//   // Display score and timer
+function gameTimer(g){//   // Display keyboardScore and timer
   g.textSize(26);
   g.noStroke();
   g.fill(255);
   g.rect(0 ,5, 150 ,31);
   g.fill(0);
-  g.text("Score: " + score, 70, 30);
-  remainingTime = max(timer - int((millis() - startKeyboardTime) / 1000), 0);
+  g.text("Score: " + keyboardScore, 70, 30);
+  remainingTime = max(timer + int((startKeyboardTime - Date.now()) / 1000), 0);
   g.fill(255,255,255);
   g.rect(GAMEBOARD_LEN - 101,5, 1000, 30);
   g.fill(0,0,0);
@@ -538,13 +552,36 @@ function mazeMode(g){
    createCircles(20); // Create 10 circles for the game
  }
 
+ function circleGameTimer(g){//   // Display score and timer
+  g.textSize(26);
+  g.noStroke();
+  g.fill(0);
+  g.rect(0 ,5, 150 ,31);
+  g.fill(255);
+  g.text("Score: " + circleScore, 70, 30);
+  remainingTime = max(ceil(abs(startCircleTime - Date.now()) / 1000), 0);
+  g.fill(0);
+  g.rect(GAMEBOARD_LEN - 101,5, 1000, 30);
+  g.fill(255);
+  g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 30);
+
+
+  // displaying.splice(0,displaying.length-2);
+  // displaying.push(time);
+}
+
+let hasBlue;
  function playCircleGame(g) {
   // g.background(48, 25, 52);      
    let currentTime = (millis() - startCircleTime) / 1000; // Calculate elapsed time in seconds
    if (currentTime >= gameDuration) {
      endGame();
    } else {
+    hasBlue = false;
      for (let i = circles.length - 1; i >= 0; i--) {
+      if(circle.isBlue){
+        hasBlue = true;
+      }
        let circle = circles[i];
        circle.display(g);
       let d = dist(adjX, adjY, circle.x, circle.y);
@@ -552,8 +589,10 @@ function mazeMode(g){
         if(!circle.isBlue){
           circle.isRed = true;
           buzz.play();
+          errors++;
         }
         else if(mouseIsPressed) {
+        circleScore++;
          circles.splice(i, 1); // Remove the clicked circle
          g.background(0,0,0);      
          ding.play();
@@ -567,6 +606,8 @@ function mazeMode(g){
    circles = [];
    // Your end game logic here
    // For example, show a game-over message.
+   circleGame.fill(255);
+   circleGame.text("Game Over \n Errors: " + errors ,GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
  }
  
  const desiredSpacing = 2; // Adjust the desired spacing between circles
@@ -578,7 +619,7 @@ function mazeMode(g){
 
      while (!valid) {
        valid = true;
-       x = random(300, 1400);
+       x = random(100, GAMEBOARD_LEN-50);
        y = random(100, GAMEBOARD_HEIGHT-100);
        radius = random(20, 50);
        isBlue = random() <= 0.4;
