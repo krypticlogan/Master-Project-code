@@ -80,7 +80,7 @@ let start, target;
 var backButton;
 let circleScore = 0;
 let startCircleTime;
-
+let playing = false;
 
 // let currentWord = "";
 // let wordIndex = 0;
@@ -223,8 +223,6 @@ function createGameGui(gameMode){ //GAME GUI
  
       }
       
-      
-      
       // ^^ move player logic ^^
       
       
@@ -237,9 +235,6 @@ function createGameGui(gameMode){ //GAME GUI
         findStartAndTarget(mazeLevel);
         dragging = false;
       }
-
-     
-
 
       // Draw starting point
       mazeGame.stroke('green')
@@ -264,7 +259,9 @@ function createGameGui(gameMode){ //GAME GUI
         break;
     case 3: image(circleGame,displayWidth/2-625, displayHeight/2-300);
         playCircleGame(circleGame);
+        if(playing){
         circleGameTimer(circleGame);
+        }
     break;
   }
   
@@ -549,7 +546,7 @@ function mazeMode(g){
   g.textSize(20);
   }
  function startCircleGame() {
-   createCircles(20); // Create 10 circles for the game
+   createCircles(20,.4); // Create 10 circles for the game
  }
 
  function circleGameTimer(g){//   // Display score and timer
@@ -569,20 +566,24 @@ function mazeMode(g){
   // displaying.splice(0,displaying.length-2);
   // displaying.push(time);
 }
-
-let hasBlue;
+let circleTimer = 20; //time left in seconds
+let hasBlue = true;
+let finishTime;
  function playCircleGame(g) {
   // g.background(48, 25, 52);      
-   let currentTime = (millis() - startCircleTime) / 1000; // Calculate elapsed time in seconds
-   if (currentTime >= gameDuration) {
-     endGame();
-   } else {
+   let timeLeft = (circleTimer - startCircleTime) / 1000; // Calculate elapsed time in seconds
+   playing = true;
+   if (!hasBlue) {//if there are no more blue circles
+    // createCircles(5,.9);
+    endGame();
+    playing = false;
+    } else {
     hasBlue = false;
-     for (let i = circles.length - 1; i >= 0; i--) {
+     for (let i = circles.length - 1; i >= 0; i--) { //for each circle
+      let circle = circles[i];
       if(circle.isBlue){
         hasBlue = true;
       }
-       let circle = circles[i];
        circle.display(g);
       let d = dist(adjX, adjY, circle.x, circle.y);
        if (d < circle.radius / 2){
@@ -603,16 +604,19 @@ let hasBlue;
  }
  
  function endGame() {
+  circleGame.background(0);
    circles = [];
    // Your end game logic here
    // For example, show a game-over message.
+   finishTime = remainingTime;
    circleGame.fill(255);
-   circleGame.text("Game Over \n Errors: " + errors ,GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
+   circleGame.text("Game Over \nYou clicked "+ circleScore + " circles in " + finishTime + " seconds!\n" + "Errors: " + errors ,GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
+  //  circleGame.noLoop();
  }
  
  const desiredSpacing = 2; // Adjust the desired spacing between circles
  
- function createCircles(num) {
+ function createCircles(num, perc) {
    for (let i = 0; i < num; i++) {
      let valid = false;
      let x, y, radius, isBlue;
@@ -622,7 +626,7 @@ let hasBlue;
        x = random(100, GAMEBOARD_LEN-50);
        y = random(100, GAMEBOARD_HEIGHT-100);
        radius = random(20, 50);
-       isBlue = random() <= 0.4;
+       isBlue = random() <= perc;
 
 
        for (let circle of circles) {
