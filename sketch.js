@@ -47,7 +47,7 @@ let collisions = 0;
 let timeElapsed = 0;
 let won = false;
 let mazeLevel = 1;
-let mazeHiScore;
+var bestTime = 1000;
 
 const maze1 = [
   [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
@@ -214,15 +214,7 @@ function createGameGui(gameMode){ //GAME GUI
     backButton.position(100,displayHeight/2+210);
     backButton.size(100,30);
     backButton.mousePressed(back);
-  // var backButton;
-  // var instructionExit;
-  // var restart;
- 
-  // instructionExit = createButton("X");
-  // instructionExit.size(25,25);
-  // instructionExit.position(displayWidth/2-160, displayHeight/2-210);
-  // instructionExit.mousePressed();
- 
+
   switch(gameMode){
     //keyboard
     case 1: 
@@ -235,6 +227,8 @@ function createGameGui(gameMode){ //GAME GUI
       displayWord(keyboardGame);
       checkWord(keyboardGame);
       gameTimer(keyboardGame);
+
+      keyboardGame.fill(100,100,100);
       gameOver(keyboardGame);
       if(keyboardScore > keyHiScore){
         keyHiScore = keyboardScore;
@@ -286,6 +280,8 @@ function createGameGui(gameMode){ //GAME GUI
       mazeGame.stroke('blue');
       mazeGame.circle(playerX, playerY, player.r);
       runTimer();
+
+      
       }
       else{
         endMaze();
@@ -372,15 +368,6 @@ function keyboardMode(g){
   nextWord(words, wordIndex);
   g.pop()
   }
-//   var word;
-//   var words;
-//   var letterIndex;
-//   var wordIndex;
-// let userInput = "";
-// let lastKey;
-// let displaying = [];
-
-
 
   function nextWord(array, index){
     let wordIndex = index;
@@ -462,9 +449,6 @@ function gameTimer(g){//   // Display keyboardScore and timer
   g.fill(0,0,0);
   g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 30);
 
-
-  // displaying.splice(0,displaying.length-2);
-  // displaying.push(time);
 }
 
 
@@ -487,14 +471,6 @@ class Player {
     this.offsetY = 0;
   }
 
-  // show(){
-  //   if(this.dragging){
-  //     this.g.fill(200,0,200);
-  //   } else {
-  //     this.g.fill(255,255,255);
-  //   }
-  //   this.g.circle(this.x,this.y,this.r);
-  // }
 }
 
 
@@ -552,9 +528,7 @@ class Player {
                 dragging = false;
                 collisions++;
               }
-              // console.log(i + " " + j);
-              // mazeGame.fill('pink');
-              // mazeGame.circle(boundingX,boundingY,20);
+
             } else {
               mazeGame.stroke('white');
               mazeGame.fill(255); // Path
@@ -581,24 +555,21 @@ function mazeMode(g){
   g.fill(30,70,100);
   g.textSize(20);
 
-  // let player = createPlayer(g);
-  // player.changeColor(red);
-
-  // if(player.isSelected()){
-  //   // player.changeX(mouseX);
-  //   // player.changeY(mouseY);
-  //   return;
-  // } 
-  
-
-
   //game logic starts here
   findStartAndTarget(mazeLevel);
 }
 
 function endMaze(){
+  mazeLevel = 1;
   mazeGame.background(0);
-  mazeGame.fill(255);
+ if (timeElapsed < bestTime){
+    bestTime = timeElapsed;
+    mazeGame.fill(0,255,0);
+    mazeGame.stroke(0,255,0);
+    // mazeGame.text("NEW BEST TIME",GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2-100);
+     }
+  mazeGame.fill(255,255,255);
+  mazeGame.noStroke();
   mazeGame.text("Congratulations it took you " + timeElapsed + " seconds to complete the game! \n You made " + collisions + " mistake(s). Try Again?" , GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
 }
   
@@ -629,8 +600,6 @@ function endMaze(){
   g.text("Time: " + remainingTime, GAMEBOARD_LEN - 50, 30);
 
 
-  // displaying.splice(0,displaying.length-2);
-  // displaying.push(time);
 }
 let circleTimer = 20; //time left in seconds
 let hasBlue = true;
