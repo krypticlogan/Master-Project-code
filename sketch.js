@@ -120,8 +120,6 @@ function setup() {
   mazeMode(mazeGame);
   
   backButton = createButton("Back");
-  const GAMEBOARD_LEN = displayWidth*.7;
-const GAMEBOARD_HEIGHT = displayHeight*.7;
 }
 function draw() {
   adjX = mouseX-(displayWidth/2-625);
