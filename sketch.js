@@ -84,7 +84,8 @@ let circleScore = 0;
 let startCircleTime;
 let playing = false;
 let errors = 0;
-let circleHiScore; 
+let bestCPS = 0;
+let cps; 
 // let currentWord = "";
 // let wordIndex = 0;
 // let letterIndex = 0;
@@ -119,6 +120,8 @@ function setup() {
   mazeMode(mazeGame);
   
   backButton = createButton("Back");
+  const GAMEBOARD_LEN = displayWidth*.7;
+const GAMEBOARD_HEIGHT = displayHeight*.7;
 }
 function draw() {
   adjX = mouseX-(displayWidth/2-625);
@@ -305,7 +308,10 @@ function back(){
     mode = 0;
     backButton.remove();
     }
-
+    if(gameMode == 2){
+      mazeLevel = 1;
+      findStartAndTarget(mazeLevel);
+    }
   if(gameMode == 3){
     restartCircles();
   }
@@ -639,11 +645,18 @@ let finishTime;
  function endGame() {
   circleGame.background(0);
    circles = [];
+   cps = circleScore/remainingTime;
+   if(cps >= bestCPS){
+    bestCPS = cps;
+    circleGame.fill(0,255,0);
+    circleGame.stroke(0,255,0);
+    circleGame.text("New High Score!", GAMEBOARD_LEN/2, GAMEBOARD_HEIGHT/2-100);
+   }
    // Your end game logic here
    // For example, show a game-over message.
    finishTime = remainingTime;
    circleGame.fill(255);
-   circleGame.text("Game Over \nYou clicked "+ circleScore + " circles in " + finishTime + " seconds!\n" + "Errors: " + errors ,GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
+   circleGame.text("Game Over \nYou clicked "+ circleScore + " circles in " + finishTime + " seconds!\n Thats " + cps + " circles per second.\n" + "Errors: " + errors ,GAMEBOARD_LEN/2,GAMEBOARD_HEIGHT/2);
   //  circleGame.noLoop();
   playing = false;
  }
